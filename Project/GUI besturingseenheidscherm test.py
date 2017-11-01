@@ -7,8 +7,9 @@ root = Tk()
 
 class besturingseenheid:
 
+
     def __init__(self, master, col):
-        f = Frame(master)
+        f = Frame(master, highlightbackground="grey", highlightthickness=1, bd=0)
         row = 0
         nmbrofcols = 5
 
@@ -31,24 +32,27 @@ class besturingseenheid:
         scale2.set(70)
         scale2.grid(row=4, column=0)
 
-        but1 = Button(f, text="Inrollen")
-        but1.grid(row=5, column=0, sticky=E)
+        but1 = Button(f, text="Inrollen", width=10)
+        but1.grid(row=5, column=0, sticky=S)
 
-        but2 = Button(f, text="Uitrollen")
-        but2.grid(row=6, column=0, sticky=E)
+        but2 = Button(f, text="Uitrollen", width=10)
+        but2.grid(row=6, column=0, sticky=S)
 
-        but3 = Button(f, text="Overzicht")
-        but3.grid(row=7, column=0, sticky=E)
+        but3 = Button(f, text="Overzicht", width=10)
+        but3.grid(row=7, column=0, sticky=S)
 
         but4 = Button(f, text="edit")
         but4.grid(row=0, column=0, sticky=NE)
 
         f.grid(row=row, column=col, padx=25, pady=25)
+        f.config(borderwidth=5)
 
-for i in range(7):
+
+for i in range(5):
+
     besturingseenheid(root, i)
 
 
 root.title("Zeng Ltd Controller")
-root.iconbitmap('Z.ico')
+# root.iconbitmap('Z.ico')
 root.mainloop()
