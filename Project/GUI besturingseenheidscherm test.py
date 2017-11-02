@@ -2,8 +2,8 @@ from tkinter import *
 import string
 from tkinter import ttk
 
-root = Tk()
 
+root = Tk()
 
 class besturingseenheid:
 
@@ -12,7 +12,6 @@ class besturingseenheid:
         f = Frame(master, highlightbackground="grey", highlightthickness=1, bd=0)
         row = 0
         nmbrofcols = 5
-
         if col >= nmbrofcols:
             row = int(col / nmbrofcols)
             col = col-nmbrofcols*row

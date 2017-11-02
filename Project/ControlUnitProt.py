@@ -3,8 +3,11 @@ REQ_CONNECTION = 0x3F
 ACK_CONNECTION = 0xFF
 REQ_DEVICE_NAME = 0x02
 RET_DEVICE_NAME = 0x82
-# send new device name UPD_DEVICE_NAME            = 0x03
-# confirm update of new dev=ice name
+
+# send new device name
+UPD_DEVICE_NAME = 0x03
+
+# confirm update of new device name
 CON_NEW_DEVICE_NAME = 0x83
 REQ_SENSOR_TYPE = 0x04
 RET_SENSOR_TYPE = 0x84
@@ -16,9 +19,12 @@ UPD_SETTING = 0x20
 ACK_UPD_SETTING = 0xA0
 REQ_DISCONNECT = 0x00
 ACK_DISCONNECT = 0x80
-# possible sensor types SENSOR_TYPE_TEMP           = 0x0000
+
+# possible sensor types
+SENSOR_TYPE_TEMP = 0x0000
 SENSOR_TYPE_LIGHT = 0x0100
-# possible settings to requ=est and update
+
+# possible settings to request and update
 SETTING_MIN_EXTEND = 0x0000
 SETTING_MAX_EXTEND = 0x0001
 SETTING_SENSOR_TRIG_VAL = 0x0002
@@ -27,5 +33,5 @@ SETTING_EXTEND_IN_OUT = 0x0004
 SETTING_EXTEND_TO_VAL = 0x0005
 OP_MODE_AUTO = 0x00
 OP_MOPE_MANUAL = 0x01
-SUCCES = 0x00
+SUCCESS = 0x00
 FAILURE = 0xFF
