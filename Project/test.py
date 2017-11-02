@@ -3,6 +3,7 @@ from tkinter import font  as tkfont
 
 
 class SampleApp(tk.Tk):
+
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
@@ -17,7 +18,7 @@ class SampleApp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (Hoofdpagina, besturingseenheid):
+        for F in (Hoofdpagina, Overzicht):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -30,7 +31,7 @@ class SampleApp(tk.Tk):
         self.show_frame("Hoofdpagina")
 
     def show_frame(self, page_name):
-        # Show a frame for the given page name
+        #Show a frame for the given page name
         frame = self.frames[page_name]
         frame.tkraise()
 
@@ -54,7 +55,7 @@ class Hoofdpagina(tk.Frame):
         but2.grid(row=4, column=0)
 
         but3 = tk.Button(self, text="Overzicht", width=10,
-                            command=lambda: controller.show_frame("besturingseenheid"))
+                            command=lambda: controller.show_frame("Overzicht"))
         but3.grid(row=5, column=0)
 
 
@@ -68,40 +69,6 @@ class Overzicht(tk.Frame):
         button = tk.Button(self, text="Terug",
                            command=lambda: controller.show_frame("Hoofdpagina"))
         button.pack()
-
-class besturingseenheid(tk.Frame):
-    
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-
-        tk.Label(self, text="Besturingseenheid").grid(row=0, column=0, sticky=tk.W)
-
-        label1 = tk.Label(self, text="Temperatuur:")
-        label1.grid(row=1, column=0, sticky=tk.W)
-
-        label2 = tk.Label(self, text="Lichtintensiteit:")
-        label2.grid(row=3, column=0, sticky=tk.W)
-
-        scale1 = tk.Scale(self, from_=0, to=100, length=200, tickinterval=20, orient=tk.HORIZONTAL)
-        scale1.set(30)
-        scale1.grid(row=2, column=0)
-
-        scale2 = tk.Scale(self, from_=0, to=100, length=200, tickinterval=20, orient=tk.HORIZONTAL)
-        scale2.set(70)
-        scale2.grid(row=4, column=0)
-
-        but1 = tk.Button(self, text="Inrollen", width=10)
-        but1.grid(row=5, column=0, sticky=tk.S)
-
-        but2 = tk.Button(self, text="Uitrollen", width=10)
-        but2.grid(row=6, column=0, sticky=tk.S)
-
-        but3 = tk.Button(self, text="Overzicht", width=10,  command=lambda: controller.show_frame("Hoofdpagina"))
-        but3.grid(row=7, column=0, sticky=tk.S)
-
-        but4 = tk.Button(self, text="edit")
-        but4.grid(row=0, column=0, sticky=tk.NE)
 
 
 if __name__ == "__main__":
