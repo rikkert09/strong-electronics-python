@@ -42,15 +42,21 @@ class Hoofdpagina(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
-        but1 = tk.Button(self, text="Oprollen")
-        but1.grid(row=1, column=0)
+        label1 = tk.Label(self, text="Temperatuur:")
+        label1.grid(row=1, column=0)
 
-        but2 = tk.Button(self, text="Uitrollen")
-        but2.grid(row=2, column=0)
+        label2 = tk.Label(self, text="Lichtintensiteit:")
+        label2.grid(row=2, column=0)
 
-        but3 = tk.Button(self, text="Overzicht",
+        but1 = tk.Button(self, text="Oprollen", width=10)
+        but1.grid(row=3, column=0)
+
+        but2 = tk.Button(self, text="Uitrollen", width=10)
+        but2.grid(row=4, column=0)
+
+        but3 = tk.Button(self, text="Overzicht", width=10,
                             command=lambda: controller.show_frame("Overzicht"))
-        but3.grid(row=3, column=0)
+        but3.grid(row=5, column=0)
 
 
 class Overzicht(tk.Frame):
@@ -67,4 +73,6 @@ class Overzicht(tk.Frame):
 
 if __name__ == "__main__":
     root = SampleApp()
+    root.title("Zeng Ltd Controller")
+    root.iconbitmap('Z.ico')
     root.mainloop()

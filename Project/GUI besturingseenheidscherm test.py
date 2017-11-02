@@ -54,5 +54,5 @@ for i in range(5):
 
 
 root.title("Zeng Ltd Controller")
-# root.iconbitmap('Z.ico')
+root.iconbitmap('Z.ico')
 root.mainloop()
