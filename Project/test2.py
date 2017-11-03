@@ -2,6 +2,22 @@ import tkinter as tk
 from tkinter import font as tkfont
 from tkinter import ttk
 
+'''
+
+THIS PYTHON FILE IS MADE BY STRONGELECTRONICS.
+MEMBERS :   Joep Buruma,
+            Rick Lenes,
+            Mark van der Molen,
+            Vincent Leertouwer
+MOST OF THE CODE IS WRITTEN BY US.
+BUT NOT ALL SO HERE'S A LIST OFF CODE THAT IS NOT BUILD BY US.
+
+Sources:
+https://stackoverflow.com/questions/7546050/switch-between-two-frames-in-tkinter
+Sentdex : https://www.youtube.com/watch?v=JQ7QP5rPvjU
+
+'''
+
 
 class SampleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
