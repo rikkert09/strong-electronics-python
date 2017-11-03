@@ -2,6 +2,11 @@ import tkinter as tk
 from tkinter import font as tkfont
 from tkinter import ttk
 
+''''
+The class Mainpage is the front page of the application
+It's a frame that shows which controlunit(s) are connected
+'''
+
 class Mainpage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)

@@ -11,14 +11,13 @@ MEMBERS :   Joep Buruma,
             Mark van der Molen,
             Vincent Leertouwer
 MOST OF THE CODE IS WRITTEN BY US.
-BUT NOT ALL SO HERE'S A LIST OFF CODE THAT IS NOT BUILD BY US.
+BUT NOT ALL SO HERE'S A LIST OF CODE THAT IS NOT BUILT BY US.
 
 Sources:
 https://stackoverflow.com/questions/7546050/switch-between-two-frames-in-tkinter
 Sentdex : https://www.youtube.com/watch?v=JQ7QP5rPvjU
 
 '''
-
 
 class ZengApp(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -51,13 +50,6 @@ class ZengApp(tk.Tk):
         # Show a frame for the given page name
         frame = self.frames[page_name]
         frame.tkraise()
-
-
-''''
-The class Mainpage is the front page of the application
-Its a frame that shows whitch controlunit(s) are connected
-'''
-
 
 if __name__ == "__main__":
     root = ZengApp()
