@@ -71,19 +71,26 @@ class ControlUnit(tk.Frame):
         ALL BUTTONS FOR CONTROLUNIT
         '''
 
-        # The Back button used to go back to the mainpage/frontpage
-        but1 = ttk.Button(self, text="Terug", width=10,
+        #OK button applies the data and goes back to the mainpage
+        okbut = ttk.Button(self, text="OK", width=10,
                           command=lambda: controller.show_frame("Mainpage"))
-        but1.grid(row=9, column=0, sticky=tk.W)
+        okbut.grid(row=9, column=0, sticky=tk.SW)
+
+        # The Back button used to go back to the mainpage/frontpage
+        cancelbut = ttk.Button(self, text="Cancel", width=10,
+                          command=lambda: controller.show_frame("Mainpage"))
+        cancelbut.grid(row=9, column=0, sticky=tk.S)
+
+
 
         # A apply button to apply the value that is set for
         # custom unrolling position of the sunshade
-        but2 = ttk.Button(self, text="apply", width=10)
-        but2.grid(row=8, column=0, sticky=tk.E)
+        applybut = ttk.Button(self, text="apply", width=10)
+        applybut.grid(row=9, column=0, sticky=tk.SE)
 
         # Edit settings button
-        but3 = ttk.Button(self, text="edit")
-        but3.grid(row=0, column=0, sticky=tk.NE)
+        editbut = ttk.Button(self, text="edit")
+        editbut.grid(row=0, column=0, sticky=tk.E)
 
 
         #GRAPH EDIT

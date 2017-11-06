@@ -12,6 +12,7 @@ class Mainpage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
+
         ''''
         ALL LABELS FOR MAINPAGE
         '''
@@ -21,7 +22,7 @@ class Mainpage(tk.Frame):
 
         # a row of white space
         label2 = tk.Label(self)
-        label2.grid(row=2, column=0, sticky="E")
+        label2.grid(row=2, column=0)
 
         # a line of text
         label2 = tk.Label(self, text="Uitgerold:")
