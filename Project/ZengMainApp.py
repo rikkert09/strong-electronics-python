@@ -28,7 +28,8 @@ class ZengApp(tk.Tk):
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
         # will be raised above the others
-        container = tk.Frame(self)
+        # uses ttk.Frame with padding set to 10
+        container = ttk.Frame(self, padding=10)
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
