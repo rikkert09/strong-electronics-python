@@ -53,7 +53,7 @@ class ZengApp(tk.Tk):
 
 if __name__ == "__main__":
     root = ZengApp()
-    root.geometry("1280x720")
+    root.geometry("1280x720")           # pixelsize application
     root.title("Zeng Ltd Controller")   # GUI Title
     root.iconbitmap('Z.ico')            # GUI icon
     root.mainloop()

@@ -85,8 +85,8 @@ class ControlUnit(tk.Frame):
         but3 = ttk.Button(self, text="edit")
         but3.grid(row=0, column=0, sticky=tk.NE)
 
-        '''
-        GRAPH EDIT
+
+        #GRAPH EDIT
         
         f = Figure(figsize=(5, 5), dpi=100)
         a = f.add_subplot(111)
@@ -94,8 +94,7 @@ class ControlUnit(tk.Frame):
 
         canvas = FigureCanvasTkAgg(f, self)
         canvas.show()
-       # canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        canvas.get_tk_widget().grid(row=0, column=2, rowspan=10)
 
-        toolbar = NavigationToolbar2TkAgg(canvas, self)
-        toolbar.update()
-        #canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)'''
+        label21 = tk.Label(self)
+        label21.grid(row=1, column=1, rowspan=2)
