@@ -16,23 +16,40 @@ The class ControlUnit is the page that will pop-up if you press the button "over
 from the class Mainpage. The class ControlUnit is used as a overview to see data of a particulair
 Controlunit in which you can adjust settings about that particulair Controlunit.
 '''
-style.use('fivethirtyeight')
-fig = plt.figure()
-ax1 = fig.add_subplot(111)
+style.use('ggplot')
+fig_Light = Figure(figsize=(10,4), dpi = 75)
+a_Light = fig_Light.add_subplot(111)
 
+fig_Temp = Figure(figsize=(10,4), dpi = 75)
+a_Temp = fig_Temp.add_subplot(111)
 
-def animate(i):
-    graph_data = open('graphdata.txt', 'r').read()
+#Function of the graph for the light sensor
+def animate_Light(i):
+    graph_data = open('Light.txt', 'r').read()
     lines = graph_data.split('\n')
-    xs = []
-    ys = []
+    x_Values = []
+    y_Values = []
     for line in lines:
         if len(line) > 1:
             x, y = line.split(',')
-            xs.append(int(x))
-            ys.append(int(y))
-    ax1.clear()
-    ax1.plot(xs, ys)
+            x_Values.append(int(x))
+            y_Values.append(int(y))
+    a_Light.clear()
+    a_Light.plot(x_Values, y_Values)
+
+#Function of the graph for the Temp sensor
+def animate_Temp(i):
+    graph_data = open('Temp.txt', 'r').read()
+    lines = graph_data.split('\n')
+    x_Values = []
+    y_Values = []
+    for line in lines:
+        if len(line) > 1:
+            x, y = line.split(',')
+            x_Values.append(int(x))
+            y_Values.append(int(y))
+    a_Temp.clear()
+    a_Temp.plot(x_Values, y_Values)
 
 class ControlUnit(tk.Frame):
     def __init__(self, parent, controller):
@@ -134,7 +151,12 @@ class ControlUnit(tk.Frame):
         editbut = ttk.Button(borderframe, text="edit")
         editbut.grid(row=0, column=0, sticky=tk.E)
 
-        canvas = FigureCanvasTkAgg(fig, self)
-        #ani = animation.FuncAnimation(fig, animate, interval=1000)
-        canvas.show()
-        canvas.get_tk_widget().grid(row=0, column=2, rowspan=10)
+        #drawing of the light sensor graph into the frame
+        canvas_Light = FigureCanvasTkAgg(fig_Light, self)
+        canvas_Light.show()
+        canvas_Light.get_tk_widget().grid(row=0, column=2, rowspan=10)
+
+        #drawing of the Temp sensor graph into the frame
+        canvas_Temp = FigureCanvasTkAgg(fig_Temp, self)
+        canvas_Temp.show()
+        canvas_Temp.get_tk_widget().grid(row=300, column=2, rowspan=4)
