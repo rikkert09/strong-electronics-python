@@ -92,12 +92,3 @@ class ControlUnit:
         sensor_type = self.request_sensor_type()
 
         return "Device name: {}\nConnected: {}\nSensor type: {}".format(name, sensor_type, self.connected)
-
-
-if __name__ == '__main__':
-    cu = ControlUnit("/dev/ttyACM1")
-    print(cu.request_connection())
-    print(cu.request_device_name())
-    print(cu.request_sensor_type())
-    print(cu.request_status())
-    print(cu.request_setting(CUP.SETTING_OP_MODE))
