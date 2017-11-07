@@ -1,13 +1,15 @@
 import tkinter as tk
 from tkinter import font as tkfont
+from tkinter import messagebox
+from tkinter import *
 from tkinter import ttk
 import matplotlib
-matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 from matplotlib import style
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+matplotlib.use("TkAgg")
 
 ''''
 The class ControlUnit is the page that will pop-up if you press the button "overzicht"
@@ -27,9 +29,9 @@ class ControlUnit(tk.Frame):
 
         marginframe = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
         marginframe.grid(row=1)
-        borderframe = ttk.LabelFrame(marginframe,
-                                     padding=10)  # generates a labelframe within frame. padding set to 10
+        borderframe = tk.Frame(marginframe, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)  # generates a labelframe within frame. padding set to 10
         borderframe.grid(row=1)
+
 
         # Shows the name of the specific ControlUnit
         label = tk.Label(borderframe, text="Besturingseenheid")
@@ -55,30 +57,44 @@ class ControlUnit(tk.Frame):
         ALL SCALES FOR CONTROLUNIT
         '''
 
+
+
         # Scale is the slidebar to set the sensor trigger
-        scale1 = tk.Scale(borderframe, from_=0, to=100, length=200, tickinterval=25, orient=tk.HORIZONTAL)
-        scale1.set(0)
-        scale1.grid(row=6, column=0)
+        sensortrigscale = tk.Scale(borderframe, from_=0, to=100, length=200, tickinterval=25,
+                                   orient=tk.HORIZONTAL)
+        sensortrigscale.set(0)
+        sensortrigscale.grid(row=6, column=0)
 
         ''''
         ALL SPINBOXES FOR CONTROLUNIT
         '''
 
         # Spinbox to set the minimal unrolling position of the sunshade
-        spinbox1 = tk.Spinbox(borderframe, from_=0, to=100)
-        spinbox1.grid(row=2, column=0, sticky=tk.W)
+        minrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        minrollspinbox.grid(row=2, column=0, sticky=tk.W)
 
         # Spinbox to set the maximum unrolling position of the sunshade
-        spinbox2 = tk.Spinbox(borderframe, from_=0, to=100)
-        spinbox2.grid(row=4, column=0, sticky=tk.W)
+        maxrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        maxrollspinbox.grid(row=4, column=0, sticky=tk.W)
 
         # Spinbox to set the custom unrolling position of the sunshade
-        spinbox3 = tk.Spinbox(borderframe, from_=0, to=100)
-        spinbox3.grid(row=8, column=0, sticky=tk.W)
+        customrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        customrollspinbox.grid(row=8, column=0, sticky=tk.W)
 
         ''''
         ALL BUTTONS FOR CONTROLUNIT
         '''
+
+
+
+        def getdata(event=None):
+            minroll = int(minrollspinbox.get()) # retrieves data from all spinboxes and converts them to ints
+            maxroll = int(maxrollspinbox.get())
+            customroll = int(customrollspinbox.get())
+            sensortrig = sensortrigscale.get() # the .get() function on a scale already retrieves an int
+            datalist = [minroll, maxroll, customroll, sensortrig] # create list of all retrieved data
+
+            print(datalist)
 
         #OK button applies the data and goes back to the mainpage
         okbut = ttk.Button(borderframe, text="OK", width=10,
@@ -95,6 +111,7 @@ class ControlUnit(tk.Frame):
         # A apply button to apply the value that is set for
         # custom unrolling position of the sunshade
         applybut = ttk.Button(borderframe, text="apply", width=10)
+        applybut.bind("<Button-1>", getdata)
         applybut.grid(row=9, column=0, sticky=tk.SE)
 
         # Edit settings button

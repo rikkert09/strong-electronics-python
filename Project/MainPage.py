@@ -24,7 +24,8 @@ class Mainpage(tk.Frame):
     def newc(self, col):
         marginframe = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
         marginframe.grid(row=1, column=col)
-        borderframe = ttk.LabelFrame(marginframe, padding=10)  # generates a labelframe within frame. padding set to 10
+        borderframe = tk.Frame(marginframe, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
+        # generates a tk.frame within another frame, to get the padding/margin right. padx/pady set to 10
         borderframe.grid(row=1)
 
         # print(borderframe.grid_info())
