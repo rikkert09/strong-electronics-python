@@ -1,20 +1,55 @@
 import tkinter as tk
 from tkinter import font as tkfont
+from tkinter import messagebox
+from tkinter import *
 from tkinter import ttk
 import matplotlib
-matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 from matplotlib import style
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+matplotlib.use("TkAgg")
 
 ''''
 The class ControlUnit is the page that will pop-up if you press the button "overzicht"
 from the class Mainpage. The class ControlUnit is used as a overview to see data of a particulair
 Controlunit in which you can adjust settings about that particulair Controlunit.
 '''
+style.use('ggplot')
+fig_Light = Figure(figsize=(10,4), dpi = 75)
+a_Light = fig_Light.add_subplot(111)
 
+fig_Temp = Figure(figsize=(10,4), dpi = 75)
+a_Temp = fig_Temp.add_subplot(111)
+
+#Function of the graph for the light sensor
+def animate_Light(i):
+    graph_data = open('Light.txt', 'r').read()
+    lines = graph_data.split('\n')
+    x_Values = []
+    y_Values = []
+    for line in lines:
+        if len(line) > 1:
+            x, y = line.split(',')
+            x_Values.append(int(x))
+            y_Values.append(int(y))
+    a_Light.clear()
+    a_Light.plot(x_Values, y_Values)
+
+#Function of the graph for the Temp sensor
+def animate_Temp(i):
+    graph_data = open('Temp.txt', 'r').read()
+    lines = graph_data.split('\n')
+    x_Values = []
+    y_Values = []
+    for line in lines:
+        if len(line) > 1:
+            x, y = line.split(',')
+            x_Values.append(int(x))
+            y_Values.append(int(y))
+    a_Temp.clear()
+    a_Temp.plot(x_Values, y_Values)
 
 class ControlUnit(tk.Frame):
     def __init__(self, parent, controller):
@@ -27,9 +62,9 @@ class ControlUnit(tk.Frame):
 
         marginframe = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
         marginframe.grid(row=1)
-        borderframe = ttk.LabelFrame(marginframe,
-                                     padding=10)  # generates a labelframe within frame. padding set to 10
+        borderframe = tk.Frame(marginframe, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)  # generates a labelframe within frame. padding set to 10
         borderframe.grid(row=1)
+
 
         # Shows the name of the specific ControlUnit
         label = tk.Label(borderframe, text="Besturingseenheid")
@@ -55,30 +90,44 @@ class ControlUnit(tk.Frame):
         ALL SCALES FOR CONTROLUNIT
         '''
 
+
+
         # Scale is the slidebar to set the sensor trigger
-        scale1 = tk.Scale(borderframe, from_=0, to=100, length=200, tickinterval=25, orient=tk.HORIZONTAL)
-        scale1.set(0)
-        scale1.grid(row=6, column=0)
+        sensortrigscale = tk.Scale(borderframe, from_=0, to=100, length=200, tickinterval=25,
+                                   orient=tk.HORIZONTAL)
+        sensortrigscale.set(0)
+        sensortrigscale.grid(row=6, column=0)
 
         ''''
         ALL SPINBOXES FOR CONTROLUNIT
         '''
 
         # Spinbox to set the minimal unrolling position of the sunshade
-        spinbox1 = tk.Spinbox(borderframe, from_=0, to=100)
-        spinbox1.grid(row=2, column=0, sticky=tk.W)
+        minrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        minrollspinbox.grid(row=2, column=0, sticky=tk.W)
 
         # Spinbox to set the maximum unrolling position of the sunshade
-        spinbox2 = tk.Spinbox(borderframe, from_=0, to=100)
-        spinbox2.grid(row=4, column=0, sticky=tk.W)
+        maxrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        maxrollspinbox.grid(row=4, column=0, sticky=tk.W)
 
         # Spinbox to set the custom unrolling position of the sunshade
-        spinbox3 = tk.Spinbox(borderframe, from_=0, to=100)
-        spinbox3.grid(row=8, column=0, sticky=tk.W)
+        customrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        customrollspinbox.grid(row=8, column=0, sticky=tk.W)
 
         ''''
         ALL BUTTONS FOR CONTROLUNIT
         '''
+
+
+
+        def getdata(event=None):
+            minroll = int(minrollspinbox.get()) # retrieves data from all spinboxes and converts them to ints
+            maxroll = int(maxrollspinbox.get())
+            customroll = int(customrollspinbox.get())
+            sensortrig = sensortrigscale.get() # the .get() function on a scale already retrieves an int
+            datalist = [minroll, maxroll, customroll, sensortrig] # create list of all retrieved data
+
+            print(datalist)
 
         #OK button applies the data and goes back to the mainpage
         okbut = ttk.Button(borderframe, text="OK", width=10,
@@ -95,32 +144,19 @@ class ControlUnit(tk.Frame):
         # A apply button to apply the value that is set for
         # custom unrolling position of the sunshade
         applybut = ttk.Button(borderframe, text="apply", width=10)
+        applybut.bind("<Button-1>", getdata)
         applybut.grid(row=9, column=0, sticky=tk.SE)
 
         # Edit settings button
         editbut = ttk.Button(borderframe, text="edit")
         editbut.grid(row=0, column=0, sticky=tk.E)
 
+        #drawing of the light sensor graph into the frame
+        canvas_Light = FigureCanvasTkAgg(fig_Light, self)
+        canvas_Light.show()
+        canvas_Light.get_tk_widget().grid(row=0, column=2, rowspan=10)
 
-        #GRAPH EDIT
-        
-        f = Figure(figsize=(16, 8), dpi=60) #plt.figure()
-        a = f.add_subplot(1,1,1)
-
-        def animate(i):
-            graph_data = open('graphdata.txt', 'r').read() #kan weg we gebruiken geen txt
-            lines = graph_data.split('\n')              #dit moet var = ingelezen data
-            xValues = []
-            yValues = []
-            for line in lines:
-                if len(line) > 1:
-                    x, y = line.split(',')
-                    xValues.append(x) # moet de seconden er aanplakken
-                    yValues.append(y) # drukt de waarde voor de tijd af
-                a.clear()
-                a.plot(xValues, yValues)
-
-        canvas = FigureCanvasTkAgg(f, self)
-        ani = animation.FuncAnimation(f, animate, interval=1000)
-        canvas.show()
-        canvas.get_tk_widget().grid(row=0, column=2, rowspan=10)
+        #drawing of the Temp sensor graph into the frame
+        canvas_Temp = FigureCanvasTkAgg(fig_Temp, self)
+        canvas_Temp.show()
+        canvas_Temp.get_tk_widget().grid(row=300, column=2, rowspan=4)
