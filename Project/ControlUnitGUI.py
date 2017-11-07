@@ -5,6 +5,9 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
+from matplotlib import style
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
 
 ''''
 The class ControlUnit is the page that will pop-up if you press the button "overzicht"
@@ -101,13 +104,23 @@ class ControlUnit(tk.Frame):
 
         #GRAPH EDIT
         
-        f = Figure(figsize=(5, 5), dpi=100)
-        a = f.add_subplot(111)
-        a.plot([1, 2, 3, 4, 5, 6, 7, 8], [5, 6, 1, 3, 8, 9, 3, 5])
+        f = Figure(figsize=(16, 8), dpi=60) #plt.figure()
+        a = f.add_subplot(1,1,1)
+
+        def animate(i):
+            graph_data = open('graphdata.txt', 'r').read() #kan weg we gebruiken geen txt
+            lines = graph_data.split('\n')              #dit moet var = ingelezen data
+            xValues = []
+            yValues = []
+            for line in lines:
+                if len(line) > 1:
+                    x, y = line.split(',')
+                    xValues.append(x) # moet de seconden er aanplakken
+                    yValues.append(y) # drukt de waarde voor de tijd af
+                a.clear()
+                a.plot(xValues, yValues)
 
         canvas = FigureCanvasTkAgg(f, self)
+        ani = animation.FuncAnimation(f, animate, interval=1000)
         canvas.show()
         canvas.get_tk_widget().grid(row=0, column=2, rowspan=10)
-
-        label21 = tk.Label(self)
-        label21.grid(row=1, column=1, rowspan=2)
