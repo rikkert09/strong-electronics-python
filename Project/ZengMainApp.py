@@ -3,6 +3,10 @@ from tkinter import font as tkfont
 from tkinter import ttk
 import ControlUnitGUI as C
 import MainPage as M
+from matplotlib.figure import Figure
+from matplotlib import style
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
 
 '''
 THIS PYTHON FILE IS MADE BY STRONGELECTRONICS.
@@ -54,7 +58,9 @@ class ZengApp(tk.Tk):
 
 if __name__ == "__main__":
     root = ZengApp()
+    ani = animation.FuncAnimation(C.fig, C.animate, interval=1000)
     root.geometry("1280x720")           # pixelsize application
     root.title("Zeng Ltd Controller")   # GUI Title
-    root.iconbitmap('Z.ico')            # GUI icon
+    # root.iconbitmap('Z.ico')            # GUI icon
     root.mainloop()
+

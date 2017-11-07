@@ -16,7 +16,23 @@ The class ControlUnit is the page that will pop-up if you press the button "over
 from the class Mainpage. The class ControlUnit is used as a overview to see data of a particulair
 Controlunit in which you can adjust settings about that particulair Controlunit.
 '''
+style.use('fivethirtyeight')
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
 
+
+def animate(i):
+    graph_data = open('graphdata.txt', 'r').read()
+    lines = graph_data.split('\n')
+    xs = []
+    ys = []
+    for line in lines:
+        if len(line) > 1:
+            x, y = line.split(',')
+            xs.append(int(x))
+            ys.append(int(y))
+    ax1.clear()
+    ax1.plot(xs, ys)
 
 class ControlUnit(tk.Frame):
     def __init__(self, parent, controller):
@@ -118,26 +134,7 @@ class ControlUnit(tk.Frame):
         editbut = ttk.Button(borderframe, text="edit")
         editbut.grid(row=0, column=0, sticky=tk.E)
 
-
-        #GRAPH EDIT
-        
-        f = Figure(figsize=(16, 8), dpi=60) #plt.figure()
-        a = f.add_subplot(1,1,1)
-
-        def animate(i):
-            graph_data = open('graphdata.txt', 'r').read() #kan weg we gebruiken geen txt
-            lines = graph_data.split('\n')              #dit moet var = ingelezen data
-            xValues = []
-            yValues = []
-            for line in lines:
-                if len(line) > 1:
-                    x, y = line.split(',')
-                    xValues.append(x) # moet de seconden er aanplakken
-                    yValues.append(y) # drukt de waarde voor de tijd af
-                a.clear()
-                a.plot(xValues, yValues)
-
-        canvas = FigureCanvasTkAgg(f, self)
-        ani = animation.FuncAnimation(f, animate, interval=1000)
+        canvas = FigureCanvasTkAgg(fig, self)
+        #ani = animation.FuncAnimation(fig, animate, interval=1000)
         canvas.show()
         canvas.get_tk_widget().grid(row=0, column=2, rowspan=10)
