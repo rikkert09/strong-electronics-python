@@ -9,16 +9,19 @@ from matplotlib.figure import Figure
 from matplotlib import style
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+import pylab
+
 matplotlib.use("TkAgg")
 
 ''''
 The class ControlUnit is the page that will pop-up if you press the button "overzicht"
 from the class Mainpage. The class ControlUnit is used as a overview to see data of a particulair
-Controlunit in which you can adjust settings about that particulair Controlunit.
+Controlunit in which you can adjust settings about that particular Controlunit.
 '''
 style.use('ggplot')
 fig_Light = Figure(figsize=(10,4), dpi = 75)
 a_Light = fig_Light.add_subplot(111)
+# a_Light.margins(0)
 
 fig_Temp = Figure(figsize=(10,4), dpi = 75)
 a_Temp = fig_Temp.add_subplot(111)
@@ -160,3 +163,5 @@ class ControlUnit(tk.Frame):
         canvas_Temp = FigureCanvasTkAgg(fig_Temp, self)
         canvas_Temp.show()
         canvas_Temp.get_tk_widget().grid(row=300, column=2, rowspan=4)
+
+        # fig_Light.set_ylim([0, 1000])

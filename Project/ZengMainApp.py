@@ -8,6 +8,7 @@ from matplotlib.figure import Figure
 from matplotlib import style
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+from tkinter import messagebox
 
 '''
 THIS PYTHON FILE IS MADE BY STRONGELECTRONICS.
@@ -51,6 +52,27 @@ class ZengApp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("Mainpage")
+
+        menubar = tk.Menu(self)
+        file_menu = tk.Menu(menubar, tearoff=0)
+        file_menu.add_command(label="Open")
+        file_menu.add_command(label="Save")
+        file_menu.add_separator()
+        file_menu.add_command(label="Quit", command=self.quit)
+        menubar.add_cascade(label="File", menu=file_menu)
+
+        def show_about():
+            messagebox.showwarning(
+                "About",
+                "This application was made by StrongElectronics!"
+            )
+
+        help_menu = tk.Menu(menubar, tearoff=0)
+        help_menu.add_command(label="About",
+                              accelerator="Ctrl-A",
+                              command=show_about)
+        menubar.add_cascade(label="Help", menu=help_menu)
+        self.config(menu=menubar)
 
     def show_frame(self, page_name):
         # Show a frame for the given page name
