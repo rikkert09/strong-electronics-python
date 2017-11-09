@@ -83,7 +83,7 @@ if __name__ == "__main__":
     root = ZengApp()
     ani_Light = animation.FuncAnimation(C.fig_Light, C.animate_Light, interval=1000) # 30000 ms = 30 s
     ani_Temp = animation.FuncAnimation(C.fig_Temp, C.animate_Temp, interval=1000) # 40000 ms = 40 s
-    root.geometry("1280x720")           # pixelsize application
+    root.geometry("1280x350")           # pixelsize application
     root.title("Zeng Ltd Controller")   # GUI Title
     root.iconbitmap('Z.ico')            # GUI icon
     root.mainloop()
