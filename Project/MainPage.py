@@ -11,18 +11,22 @@ class Mainpage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        Mainpage.newc(self, 0)
-        Mainpage.newc(self, 1)
-        Mainpage.newc(self, 2)
-        Mainpage.newc(self, 3)
+        names = ["Besturingseenheid 1", "Besturingseenheid 2", "asdasd 3"]
+        for i in names:
+            Mainpage.newc(self, i, names.index(i)) # passes the string and index position in the list of names
+
+        # Mainpage.newc(self, name, 0)
+        # Mainpage.newc(self, name, 1)
+        # Mainpage.newc(self, 2)
+        # Mainpage.newc(self, 3)
         # Mainpage.newc(self, 4)
 
         ''''
         ALL LABELS FOR MAINPAGE
         '''
 
-    def newc(self, col):
-        marginframe = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
+    def newc(self, name, col): # name is a string and col is the index position at which to place the control unit
+        marginframe = tk.Frame(self, padx=10, pady=10, width=300)  # generates a frame within the frame with padding set to 10
         marginframe.grid(row=1, column=col)
         borderframe = tk.Frame(marginframe, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
         # generates a tk.frame within another frame, to get the padding/margin right. padx/pady set to 10
@@ -31,7 +35,7 @@ class Mainpage(tk.Frame):
         # print(borderframe.grid_info())
 
         # a line of text
-        label1 = tk.Label(borderframe, text="Besturingseenheid")
+        label1 = tk.Label(borderframe, text=name)
         label1.grid(row=1, column=0)
 
         # a row of white space

@@ -121,8 +121,6 @@ class ControlUnit(tk.Frame):
         ALL BUTTONS FOR CONTROLUNIT
         '''
 
-
-
         def getdata(event=None):
             minroll = int(minrollspinbox.get()) # retrieves data from all spinboxes and converts them to ints
             maxroll = int(maxrollspinbox.get())
@@ -143,7 +141,6 @@ class ControlUnit(tk.Frame):
         cancelbut.grid(row=9, column=0, sticky=tk.S)
 
 
-
         # A apply button to apply the value that is set for
         # custom unrolling position of the sunshade
         applybut = ttk.Button(borderframe, text="apply", width=10)
@@ -154,10 +151,12 @@ class ControlUnit(tk.Frame):
         editbut = ttk.Button(borderframe, text="edit")
         editbut.grid(row=0, column=0, sticky=tk.E)
 
+
         #drawing of the light sensor graph into the frame
         canvas_Light = FigureCanvasTkAgg(fig_Light, self)
         canvas_Light.show()
         canvas_Light.get_tk_widget().grid(row=0, column=2, rowspan=10)
+        # print(grid_info())
 
         #drawing of the Temp sensor graph into the frame
         canvas_Temp = FigureCanvasTkAgg(fig_Temp, self)
