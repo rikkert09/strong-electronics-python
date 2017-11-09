@@ -75,7 +75,7 @@ class ZengApp(tk.Tk):
         self.config(menu=menubar)
 
     def show_frame(self, page_name):
-        # Show a frame for the given page name
+        # Shows a frame for the given page name
         frame = self.frames[page_name]
         frame.tkraise()
 

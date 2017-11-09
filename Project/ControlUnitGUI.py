@@ -68,26 +68,46 @@ class ControlUnit(tk.Frame):
         borderframe = tk.Frame(marginframe, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)  # generates a labelframe within frame. padding set to 10
         borderframe.grid(row=1)
 
+        name="Besturingseenheid"
+
+        newname = Entry(borderframe)
+        newname.insert(0, name)
+
+        # def changename(event=None):
+        #     # editname.newedit.grid_forget()
+        #     newlabel = tk.Label(borderframe, text="Temperatuursensor", width=17)
+        #     newlabel.grid(row=0, column=0, sticky=tk.W)
+
+        def editname(event=None):
+            print("Not implemented yet")
+            # namelabel.grid_forget()
+            # editbut.grid_forget()
+            # newname = Entry(borderframe)
+            # newname.insert(0, name)
+            # newname.grid(row=0, column=0, sticky=tk.W)
+            # newedit = ttk.Button(borderframe, text="OK")
+            # newedit.bind("<Button-1>", changename)
+            # newedit.grid(row=0, column=0, sticky=tk.E)
 
         # Shows the name of the specific ControlUnit
-        label = tk.Label(borderframe, text="Besturingseenheid")
-        label.grid(row=0, column=0, sticky=tk.W)
+        namelabel = tk.Label(borderframe, text=name)
+        namelabel.grid(row=0, column=0, sticky=tk.W)
 
         # Text for the option to set the minimum roll out value of the sunshade
-        label1 = tk.Label(borderframe, text="Minimale Uitrol (in cm)")
-        label1.grid(row=1, column=0, sticky=tk.W)
+        minrolllabel = tk.Label(borderframe, text="Minimale Uitrol (in cm)")
+        minrolllabel.grid(row=1, column=0, sticky=tk.W)
 
         # Text for the option to set the maximum roll out value of the sunshade
-        label2 = tk.Label(borderframe, text="Maximale Uitrol (in cm)")
-        label2.grid(row=3, column=0, sticky=tk.W)
+        maxrolllabel = tk.Label(borderframe, text="Maximale Uitrol (in cm)")
+        maxrolllabel.grid(row=3, column=0, sticky=tk.W)
 
         # Text for the option to set the trigger value of the sensor
-        label3 = tk.Label(borderframe, text="Sensor Trigger")
-        label3.grid(row=5, column=0, sticky=tk.W)
+        sensortriglabel = tk.Label(borderframe, text="Sensor Trigger")
+        sensortriglabel.grid(row=5, column=0, sticky=tk.W)
 
         # Text for the option to set the custom value of the sunshade
-        label4 = tk.Label(borderframe, text="Handmatig op/uitrollen (in cm)")
-        label4.grid(row=7, column=0, sticky=tk.W)
+        customrolllabel = tk.Label(borderframe, text="Handmatig op/uitrollen (in cm)")
+        customrolllabel.grid(row=7, column=0, sticky=tk.W)
 
         ''''
         ALL SCALES FOR CONTROLUNIT
@@ -130,6 +150,7 @@ class ControlUnit(tk.Frame):
 
             print(datalist)
 
+
         #OK button applies the data and goes back to the mainpage
         okbut = ttk.Button(borderframe, text="OK", width=10,
                           command=lambda: controller.show_frame("Mainpage"))
@@ -141,14 +162,15 @@ class ControlUnit(tk.Frame):
         cancelbut.grid(row=9, column=0, sticky=tk.S)
 
 
-        # A apply button to apply the value that is set for
+        # Applies the values that are set in the spinboxes and scale
         # custom unrolling position of the sunshade
         applybut = ttk.Button(borderframe, text="apply", width=10)
         applybut.bind("<Button-1>", getdata)
         applybut.grid(row=9, column=0, sticky=tk.SE)
 
-        # Edit settings button
+        # Button to edit the control unit name
         editbut = ttk.Button(borderframe, text="edit")
+        editbut.bind("<Button-1>", editname)
         editbut.grid(row=0, column=0, sticky=tk.E)
 
 
