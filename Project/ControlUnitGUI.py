@@ -173,6 +173,54 @@ class ControlUnit(tk.Frame):
         editbut.bind("<Button-1>", editname)
         editbut.grid(row=0, column=0, sticky=tk.E)
 
+        '''
+        Second block of Unit Data
+        '''
+
+        marginframe2 = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
+        marginframe2.grid(row=1, column=5)
+        # generates a labelframe within frame. padding set to 10
+        borderframe2 = tk.Frame(marginframe2, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
+        borderframe2.grid(row=0, column=5)
+
+        # Shows label of text
+        Graphinfo = tk.Label(borderframe2, text="Informatie Besturingseenheid")
+        Graphinfo.grid(row=0, column=0, sticky=tk.W)
+
+        Empty_Block = tk.Label(borderframe2)
+        Empty_Block.grid(row=1, column=0, sticky=tk.W)
+
+        Type_Graph_Text = tk.Label(borderframe2, text="Type Grafiek:")
+        Type_Graph_Text.grid(row=2, column=0, sticky=tk.W)
+
+        Graph2_Text = tk.Label(borderframe2, text="Temperatuur")
+        Graph2_Text.grid(row=3, column=0, sticky=tk.W)
+
+        Empty_Block2 = tk.Label(borderframe2)
+        Empty_Block2.grid(row=4, column=0, sticky=tk.W)
+
+        X_as_label = tk.Label(borderframe2, text="X-as : Tijd in seconden")
+        X_as_label.grid(row=5, column=0, sticky=tk.W)
+
+        Y_as_label = tk.Label(borderframe2, text="Y-as : Temperatuur in °C")
+        Y_as_label.grid(row=6, column=0, sticky=tk.W)
+
+        Empty_Block3 = tk.Label(borderframe2)
+        Empty_Block3.grid(row=7, column=0, sticky=tk.W)
+
+        # Shows the label with the temperature
+        TempText = tk.Label(borderframe2, text="Huidige temperatuur(°C) : ")
+        TempText.grid(row=8, column=0, sticky=tk.W)
+
+        Rollout_Text = tk.Label(borderframe2, text="Percentage uitgerold : ")
+        Rollout_Text.grid(row=9, column=0, sticky=tk.W)
+
+        Empty_Block4 = tk.Label(borderframe2)
+        Empty_Block4.grid(row=10, column=0, sticky=tk.W)
+
+        BackButton = ttk.Button(borderframe2, text="Terug naar de Hoofdpagina",
+                                command=lambda: controller.show_frame("Mainpage"))
+        BackButton.grid(row=11, column=0, rowspan=4, sticky=tk.S)
 
         #drawing of the light sensor graph into the frame
         canvas_Light = FigureCanvasTkAgg(fig_Light, self)

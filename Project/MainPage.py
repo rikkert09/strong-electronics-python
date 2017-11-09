@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import font as tkfont
 from tkinter import ttk
-import serial.tools.list_ports
+#import serial.tools.list_ports
 
 ''''
 The class Mainpage is the front page of the application
@@ -25,14 +25,14 @@ class Mainpage(tk.Frame):
         ''''
         ALL LABELS FOR MAINPAGE
         '''
-        def scan(self):
-            ports = list(serial.tools.list_ports.comports())
-            for p in ports:
-                print(p)
-
-        scanbutton = ttk.Button(self, text="Scan for devices")
-        scanbutton.bind("<Button-1>", scan)
-        scanbutton.grid(row=0)
+        # def scan(self):
+        #     ports = list(serial.tools.list_ports.comports())
+        #     for p in ports:
+        #         print(p)
+        #
+        # scanbutton = ttk.Button(self, text="Scan for devices")
+        # scanbutton.bind("<Button-1>", scan)
+        # scanbutton.grid(row=0)
 
 
 
