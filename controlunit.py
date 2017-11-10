@@ -1,12 +1,17 @@
+import serial.tools.list_ports
 from serial import Serial
 from Project import ControlUnitProt as CUP
 import time
+
+def get_COM_ports():
+     return list(serial.tools.list_ports.comports())
 
 
 class ControlUnit:
     def __init__(self, hw_device):
         self.connected = False
         self.serial_connection = Serial(hw_device)
+
 
     def request_connection(self):
         time.sleep(2)

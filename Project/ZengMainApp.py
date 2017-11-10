@@ -41,16 +41,19 @@ class ZengApp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (M.Mainpage, C.ControlUnit):
-            page_name = F.__name__
-            frame = F(parent=container, controller=self)
-            self.frames[page_name] = frame
+        # for #F in (M.Mainpage, C.ControlUnit):
+        # page_name = F.__name__
+        # frame = F(parent=container, controller=self)
+        # self.frames[page_name] = frame
 
-            # put all of the pages in the same location;
-            # the one on the top of the stacking order
-            # will be the one that is visible.
-            frame.grid(row=0, column=0, sticky="nsew")
+        # put all of the pages in the same location;
+        # the one on the top of the stacking order
+        # will be the one that is visible.
+        # frame.grid(row=0, column=0, sticky="nsew")
 
+        frame = M.Mainpage(parent=container, controller=self)
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.frames[M.Mainpage.__name__] = frame
         self.show_frame("Mainpage")
 
         menubar = tk.Menu(self)
@@ -81,8 +84,7 @@ class ZengApp(tk.Tk):
 
 if __name__ == "__main__":
     root = ZengApp()
-    ani_Light = animation.FuncAnimation(C.fig_Light, C.animate_Light, interval=1000) # 30000 ms = 30 s
-    ani_Temp = animation.FuncAnimation(C.fig_Temp, C.animate_Temp, interval=1000) # 40000 ms = 40 s
+#    ani_Light = animation.FuncAnimation(C.fig_Light, C.animate_Light, interval=1000) # 30000 ms = 30
     root.geometry("1280x350")           # pixelsize application
     root.title("Zeng Ltd Controller")   # GUI Title
     root.iconbitmap('Z.ico')            # GUI icon

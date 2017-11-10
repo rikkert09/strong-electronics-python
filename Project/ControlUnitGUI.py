@@ -1,9 +1,11 @@
 import tkinter as tk
+from threading import Thread
 from tkinter import font as tkfont
 from tkinter import messagebox
 from tkinter import *
 from tkinter import ttk
 import matplotlib
+import time
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 from matplotlib import style
@@ -23,41 +25,21 @@ fig_Light = Figure(figsize=(10,4), dpi = 75)
 a_Light = fig_Light.add_subplot(111)
 # a_Light.margins(0)
 
-fig_Temp = Figure(figsize=(10,4), dpi = 75)
-a_Temp = fig_Temp.add_subplot(111)
 
-#Function of the graph for the light sensor
-def animate_Light(i):
-    graph_data = open('Light.txt', 'r').read()
-    lines = graph_data.split('\n')
-    x_Values = []
-    y_Values = []
-    for line in lines:
-        if len(line) > 1:
-            x, y = line.split(',')
-            x_Values.append(int(x))
-            y_Values.append(int(y))
-    a_Light.clear()
-    a_Light.plot(x_Values, y_Values)
 
-#Function of the graph for the Temp sensor
-def animate_Temp(i):
-    graph_data = open('Temp.txt', 'r').read()
-    lines = graph_data.split('\n')
-    x_Values = []
-    y_Values = []
-    for line in lines:
-        if len(line) > 1:
-            x, y = line.split(',')
-            x_Values.append(int(x))
-            y_Values.append(int(y))
-    a_Temp.clear()
-    a_Temp.plot(x_Values, y_Values)
 
 class ControlUnit(tk.Frame):
-    def __init__(self, parent, controller):
+
+
+    def __init__(self, parent, controller, control_unit):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.control_unit = control_unit
+        self.x_Values = []
+        self.y_Values = []
+        self.time = 0
+        self.fig_Temp = Figure(figsize=(10, 4), dpi=75)
+        self.a_Temp = self.fig_Temp.add_subplot(111)
 
         ''''
         ALL LABELS FOR CONTROLUNIT
@@ -72,22 +54,6 @@ class ControlUnit(tk.Frame):
 
         newname = Entry(borderframe)
         newname.insert(0, name)
-
-        # def changename(event=None):
-        #     # editname.newedit.grid_forget()
-        #     newlabel = tk.Label(borderframe, text="Temperatuursensor", width=17)
-        #     newlabel.grid(row=0, column=0, sticky=tk.W)
-
-        def editname(event=None):
-            print("Not implemented yet")
-            # namelabel.grid_forget()
-            # editbut.grid_forget()
-            # newname = Entry(borderframe)
-            # newname.insert(0, name)
-            # newname.grid(row=0, column=0, sticky=tk.W)
-            # newedit = ttk.Button(borderframe, text="OK")
-            # newedit.bind("<Button-1>", changename)
-            # newedit.grid(row=0, column=0, sticky=tk.E)
 
         # Shows the name of the specific ControlUnit
         namelabel = tk.Label(borderframe, text=name)
@@ -166,121 +132,71 @@ class ControlUnit(tk.Frame):
 
         # Button to edit the control unit name
         editbut = ttk.Button(borderframe, text="edit")
-        editbut.bind("<Button-1>", editname)
+      #  editbut.bind("<Button-1>", editname)
         editbut.grid(row=0, column=0, sticky=tk.E)
 
-        '''
-        This is the legend its build in a loop so depending on the value of test1
-        1 = currently Temp
-        2 = currently Light
-        '''
+        marginframe2 = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
+        marginframe2.grid(row=1, column=5)
+        # generates a labelframe within frame. padding set to 10
+        borderframe2 = tk.Frame(marginframe2, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
+        borderframe2.grid(row=0, column=5)
 
-        test1= 2
+        # Shows label of text
+        graphinfo = tk.Label(borderframe2, text="Informatie Besturingseenheid")
+        graphinfo.grid(row=0, column=0, sticky=tk.W)
 
-        if test1 == 1:
+        empty_block = tk.Label(borderframe2)
+        empty_block.grid(row=1, column=0, sticky=tk.W)
 
-            marginframe2 = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
-            marginframe2.grid(row=1, column=5)
-            # generates a labelframe within frame. padding set to 10
-            borderframe2 = tk.Frame(marginframe2, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
-            borderframe2.grid(row=0, column=5)
+        type_graph_text = tk.Label(borderframe2, text="Type Grafiek:")
+        type_graph_text.grid(row=2, column=0, sticky=tk.W)
 
-            # Shows label of text
-            graphinfo = tk.Label(borderframe2, text="Informatie Besturingseenheid")
-            graphinfo.grid(row=0, column=0, sticky=tk.W)
+        graph2_text = tk.Label(borderframe2, text="Licht")
+        graph2_text.grid(row=3, column=0, sticky=tk.W)
 
-            empty_block = tk.Label(borderframe2)
-            empty_block.grid(row=1, column=0, sticky=tk.W)
+        empty_block2 = tk.Label(borderframe2)
+        empty_block2.grid(row=4, column=0, sticky=tk.W)
 
-            type_graph_text = tk.Label(borderframe2, text="Type Grafiek:")
-            type_graph_text.grid(row=2, column=0, sticky=tk.W)
+        x_as_label = tk.Label(borderframe2, text="X-as : Tijd in seconden")
+        x_as_label.grid(row=5, column=0, sticky=tk.W)
 
-            graph2_text = tk.Label(borderframe2, text="Temperatuur")
-            graph2_text.grid(row=3, column=0, sticky=tk.W)
+        y_as_label = tk.Label(borderframe2, text="Y-as : Lichtintensiteit in lx")
+        y_as_label.grid(row=6, column=0, sticky=tk.W)
 
-            empty_block2 = tk.Label(borderframe2)
-            empty_block2.grid(row=4, column=0, sticky=tk.W)
+        empty_block3 = tk.Label(borderframe2)
+        empty_block3.grid(row=7, column=0, sticky=tk.W)
 
-            x_as_label = tk.Label(borderframe2, text="X-as : Tijd in seconden")
-            x_as_label.grid(row=5, column=0, sticky=tk.W)
+        # Shows the label with the temperature
+        self.luxtext = tk.Label(borderframe2, text="Lichtintensiteit in lux : ")
+        self.luxtext.grid(row=8, column=0, sticky=tk.W)
 
-            y_as_label = tk.Label(borderframe2, text="Y-as : Temperatuur in °C")
-            y_as_label.grid(row=6, column=0, sticky=tk.W)
+        self.rollout_text = tk.Label(borderframe2, text="Uitgerold (cm): ")
+        self.rollout_text.grid(row=9, column=0, sticky=tk.W)
 
-            empty_block3 = tk.Label(borderframe2)
-            empty_block3.grid(row=7, column=0, sticky=tk.W)
+        empty_block4 = tk.Label(borderframe2)
+        empty_block4.grid(row=10, column=0, sticky=tk.W)
 
-            # Shows the label with the temperature
-            temptext = tk.Label(borderframe2, text="Huidige temperatuur(°C) : ")
-            temptext.grid(row=8, column=0, sticky=tk.W)
+        backbutton = ttk.Button(borderframe2, text="Terug naar de Hoofdpagina",
+                                command=lambda: controller.show_frame("Mainpage"))
+        backbutton.grid(row=11, column=0, rowspan=4, sticky=tk.S)
 
-            rollout_text = tk.Label(borderframe2, text="Percentage uitgerold : ")
-            rollout_text.grid(row=9, column=0, sticky=tk.W)
+        self.updateGUI()
 
-            empty_block4 = tk.Label(borderframe2)
-            empty_block4.grid(row=10, column=0, sticky=tk.W)
+    def updateGUI(self):
+        self.time = self.time+1
 
-            backbutton = ttk.Button(borderframe2, text="Terug naar de Hoofdpagina",
-                                    command=lambda: controller.show_frame("Mainpage"))
-            backbutton.grid(row=11, column=0, rowspan=4, sticky=tk.S)
-
-        elif test1 == 2:
-
-            marginframe2 = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
-            marginframe2.grid(row=1, column=5)
-            # generates a labelframe within frame. padding set to 10
-            borderframe2 = tk.Frame(marginframe2, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
-            borderframe2.grid(row=0, column=5)
-
-            # Shows label of text
-            graphinfo = tk.Label(borderframe2, text="Informatie Besturingseenheid")
-            graphinfo.grid(row=0, column=0, sticky=tk.W)
-
-            empty_block = tk.Label(borderframe2)
-            empty_block.grid(row=1, column=0, sticky=tk.W)
-
-            type_graph_text = tk.Label(borderframe2, text="Type Grafiek:")
-            type_graph_text.grid(row=2, column=0, sticky=tk.W)
-
-            graph2_text = tk.Label(borderframe2, text="Licht")
-            graph2_text.grid(row=3, column=0, sticky=tk.W)
-
-            empty_block2 = tk.Label(borderframe2)
-            empty_block2.grid(row=4, column=0, sticky=tk.W)
-
-            x_as_label = tk.Label(borderframe2, text="X-as : Tijd in seconden")
-            x_as_label.grid(row=5, column=0, sticky=tk.W)
-
-            y_as_label = tk.Label(borderframe2, text="Y-as : Lichtintensiteit in lx")
-            y_as_label.grid(row=6, column=0, sticky=tk.W)
-
-            empty_block3 = tk.Label(borderframe2)
-            empty_block3.grid(row=7, column=0, sticky=tk.W)
-
-            # Shows the label with the temperature
-            luxtext = tk.Label(borderframe2, text="Lichtintensiteit in lux : ")
-            luxtext.grid(row=8, column=0, sticky=tk.W)
-
-            rollout_text = tk.Label(borderframe2, text="Percentage uitgerold : ")
-            rollout_text.grid(row=9, column=0, sticky=tk.W)
-
-            empty_block4 = tk.Label(borderframe2)
-            empty_block4.grid(row=10, column=0, sticky=tk.W)
-
-            backbutton = ttk.Button(borderframe2, text="Terug naar de Hoofdpagina",
-                                    command=lambda: controller.show_frame("Mainpage"))
-            backbutton.grid(row=11, column=0, rowspan=4, sticky=tk.S)
-
-        '''
-        Drawing of the graph and its position (NOT the animation!)
-        '''
-        #drawing of the light sensor graph into the frame
-        canvas_light = FigureCanvasTkAgg(fig_Light, self)
-        canvas_light.show()
-        canvas_light.get_tk_widget().grid(row=0, column=2, rowspan=10)
-
-        #drawing of the Temp sensor graph into the frame
-        canvas_temp = FigureCanvasTkAgg(fig_Temp, self)
+        status = self.control_unit.request_status()
+        self.x_Values.append((self.time))
+        self.y_Values.append(status[1])
+        self.a_Temp.clear()
+        self.a_Temp.plot(self.x_Values, self.y_Values)
+        canvas_temp = FigureCanvasTkAgg(self.fig_Temp, self)
         canvas_temp.show()
         canvas_temp.get_tk_widget().grid(row=0, column=2, rowspan=10)
+
+        self.luxtext.config(text="Lichtintensiteit in lux : "+str(status[1]))
+        self.rollout_text.config(text="Uitgerold (cm): "+str(status[0]))
+
+        self.update()
+        self.after(1000, self.updateGUI)
 
