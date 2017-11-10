@@ -122,7 +122,7 @@ class ControlUnit(tk.Frame):
         def dataerror3():
             messagebox.showwarning("Foutmelding",
                                    "Waarde te hoog!")
-        def getdata():
+        def getdata(a):
             # retrieves data from all spinboxes and converts them to ints
             minroll = int(minrollspinbox.get())
             maxroll = int(maxrollspinbox.get())
