@@ -1,17 +1,12 @@
 import tkinter as tk
-from threading import Thread
-from tkinter import font as tkfont
+
 from tkinter import messagebox
 from tkinter import *
 from tkinter import ttk
 import matplotlib
-import time
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 from matplotlib import style
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
-import pylab
 
 matplotlib.use("TkAgg")
 
@@ -41,19 +36,19 @@ class ControlUnit(tk.Frame):
         self.fig_Temp = Figure(figsize=(10, 4), dpi=75)
         self.a_Temp = self.fig_Temp.add_subplot(111)
 
-        ''''
-        ALL LABELS FOR CONTROLUNIT
-        '''
-
-        marginframe = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
+        # generates a frame within the frame with padding set to 10
+        marginframe = ttk.Frame(self, padding=10)
         marginframe.grid(row=1)
-        borderframe = tk.Frame(marginframe, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)  # generates a labelframe within frame. padding set to 10
+        # generates a labelframe within frame. padding set to 10
+        borderframe = tk.Frame(marginframe, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
         borderframe.grid(row=1)
 
-        name="Besturingseenheid"
-
+        name = "Besturingseenheid"
         newname = Entry(borderframe)
         newname.insert(0, name)
+
+        def editname():
+            print("Not implemented yet")
 
         # Shows the name of the specific ControlUnit
         namelabel = tk.Label(borderframe, text=name)
@@ -75,44 +70,83 @@ class ControlUnit(tk.Frame):
         customrolllabel = tk.Label(borderframe, text="Handmatig op/uitrollen (in cm)")
         customrolllabel.grid(row=7, column=0, sticky=tk.W)
 
-        ''''
-        ALL SCALES FOR CONTROLUNIT
-        '''
-
         # Scale is the slidebar to set the sensor trigger
         sensortrigscale = tk.Scale(borderframe, from_=0, to=100, length=200, tickinterval=25,
                                    orient=tk.HORIZONTAL)
-        sensortrigscale.set(0)
+        # sets value
+        sensortrigscale.set(25)
         sensortrigscale.grid(row=6, column=0)
 
         ''''
         ALL SPINBOXES FOR CONTROLUNIT
         '''
 
+        # validates if value is an integer
+        def validate(instr, i, acttyp): # validates if value is an integer
+            ind = int(i)
+            if acttyp == '1':  # insert
+                if not instr[ind].isdigit():
+                    return False
+            return True
+
         # Spinbox to set the minimal unrolling position of the sunshade
-        minrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        minrollspinbox = tk.Spinbox(borderframe, from_=0, to= 200, validate='all')
+        # validates if int
+        minrollspinbox["validatecommand"] = (minrollspinbox.register(validate),'%P','%i','%d')
+        minrollspinbox.delete(0, "end") # clears value
+        minrollspinbox.insert(0, 0)    # sets value
         minrollspinbox.grid(row=2, column=0, sticky=tk.W)
 
         # Spinbox to set the maximum unrolling position of the sunshade
-        maxrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        maxrollspinbox = tk.Spinbox(borderframe, from_=0, to=200, validate='all')
+        # validates if int
+        maxrollspinbox["validatecommand"] = (maxrollspinbox.register(validate),'%P','%i','%d')
+        maxrollspinbox.delete(0, "end") # clears value
+        maxrollspinbox.insert(0, 200)    # sets value
         maxrollspinbox.grid(row=4, column=0, sticky=tk.W)
 
         # Spinbox to set the custom unrolling position of the sunshade
-        customrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        customrollspinbox = tk.Spinbox(borderframe, from_=0, to=200, validate='all')
+        # validates if int
+        customrollspinbox["validatecommand"] = (customrollspinbox.register(validate),'%P','%i','%d')
+        customrollspinbox.delete(0, "end")  # clears value
+        customrollspinbox.insert(0, 30)     # sets value
         customrollspinbox.grid(row=8, column=0, sticky=tk.W)
 
-        ''''
-        ALL BUTTONS FOR CONTROLUNIT
-        '''
-
-        def getdata(event=None):
-            minroll = int(minrollspinbox.get()) # retrieves data from all spinboxes and converts them to ints
+        def dataerror():
+            messagebox.showwarning("Foutmelding",
+                                   "De minimale uitrolwaarde mag niet hoger zijn dan de maximale uitrolwaarde.")
+        def dataerror2():
+            messagebox.showwarning("Foutmelding",
+                                   "De handmatige uitrolwaarde valt niet binnen het minimum of maximum")
+        def dataerror3():
+            messagebox.showwarning("Foutmelding",
+                                   "Waarde te hoog!")
+        def getdata():
+            # retrieves data from all spinboxes and converts them to ints
+            minroll = int(minrollspinbox.get())
             maxroll = int(maxrollspinbox.get())
             customroll = int(customrollspinbox.get())
-            sensortrig = sensortrigscale.get() # the .get() function on a scale already retrieves an int
-            datalist = [minroll, maxroll, customroll, sensortrig] # create list of all retrieved data
+            # the .get() function on a scale already retrieves an int
+            sensortrig = sensortrigscale.get()
+            #   create list of all retrieved data
+            datalist = [minroll, maxroll, customroll, sensortrig]
 
-            print(datalist)
+            # checks if maxroll is greater than minroll, otherwise throws an error
+            if minroll > maxroll:
+                print("Throw an error")
+                dataerror()
+            # throws error if customroll is not within minimum and max
+            elif customroll > maxroll or customroll < minroll:
+                dataerror2()
+            # throws error when value is too high
+            elif minroll > 200 or maxroll > 200 or customroll > 200:
+                dataerror3()
+            else:
+                print(datalist)
+
+        def okbut():
+            controller.show_frame("Mainpage")
 
         # OK button applies the data and goes back to the mainpage
         okbut = ttk.Button(borderframe, text="OK", width=10,
@@ -132,8 +166,15 @@ class ControlUnit(tk.Frame):
 
         # Button to edit the control unit name
         editbut = ttk.Button(borderframe, text="edit")
-      #  editbut.bind("<Button-1>", editname)
+        editbut.bind("<Button-1>", editname)
         editbut.grid(row=0, column=0, sticky=tk.E)
+
+        marginframe2 = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
+        marginframe2.grid(row=1, column=5)
+        # generates a labelframe within frame. padding set to 10
+        borderframe2 = tk.Frame(marginframe2, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
+        borderframe2.grid(row=0, column=5)
+
 
         marginframe2 = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
         marginframe2.grid(row=1, column=5)

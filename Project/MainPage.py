@@ -22,11 +22,7 @@ class Mainpage(tk.Frame):
       #  for i in names:
      #       Mainpage.newc(self, i, names.index(i)) # passes the string and index position in the list of names
 
-        # Mainpage.newc(self, name, 0)
-        # Mainpage.newc(self, name, 1)
-        # Mainpage.newc(self, 2)
-        # Mainpage.newc(self, 3)
-        # Mainpage.newc(self, 4)
+
 
         ports = get_COM_ports()
 
@@ -74,36 +70,44 @@ class ControlUnitFrame:
 
         # print(borderframe.grid_info())
 
-        rolloutstatus = "Uiterold: " # shows rollout status
-        sensorvalue = "Sensorwaarde: " # shows sensor value
         # a line of text
-        self.name_label = tk.Label(borderframe, text=self.device_name, width=20)
-        self.name_label.grid(row=1, column=0)
+        namelabel = tk.Label(borderframe, text=self.device_name, width=20, height=7)
+        namelabel.grid(row=0, column=0)
+
+        # shows rollout status
+        rolloutlabel = tk.Label(borderframe, text="Uiterold: ")
+        rolloutlabel.grid(row=1, column=0, sticky=tk.N)
+
+        # a row of white space
+        rollout_value = tk.Label(borderframe, text=" 10 cm ")
+        rollout_value.grid(row=2, column=0, sticky=tk.N)
+
+        # shows sensor value
+        sensorvaluelabel = tk.Label(borderframe, text="Sensorwaarde: ")
+        sensorvaluelabel.grid(row=3, column=0, sticky=tk.N)
+
+        # a row of white space
+        sensorvalue = tk.Label(borderframe, text=" 10 ")
+        sensorvalue.grid(row=4, column=0, sticky=tk.N)
+
 
         # a row of white space
         emptylabel = tk.Label(borderframe)
-        emptylabel.grid(row=2, column=0)
-
-        # a line of text
-        rolloutlabel = tk.Label(borderframe, text=rolloutstatus)
-        rolloutlabel.grid(row=3, column=0)
-
-        # a line of text
-        sensorvaluelabel = tk.Label(borderframe, text=sensorvalue)
-        sensorvaluelabel.grid(row=4, column=0)
+        emptylabel.grid(row=5, column=0)
 
         ''''
         ALL BUTTONS FOR MAINPAGE
         '''
         # Button to roll up the sunshade
-        rollupbut = ttk.Button(borderframe, text="Oprollen", width=10)
-        rollupbut.grid(row=5, column=0)
+        rollupbut = ttk.Button(borderframe, text="Oprollen", width=20)
+        rollupbut.grid(row=6, column=0)
 
         # Button to roll out the sunshade
-        rolloutbut = ttk.Button(borderframe, text="Uitrollen", width=10)
-        rolloutbut.grid(row=6, column=0)
+        rolloutbut = ttk.Button(borderframe, text="Uitrollen", width=20)
+        rolloutbut.grid(row=7, column=0)
 
         # Button to go to detailed information about a particulair Controlunit
-        overviewbut = ttk.Button(borderframe, text="Overzicht", width=10,
+
+        overviewbut = ttk.Button(borderframe, text="Overzicht", width=20,
                           command=lambda: self.parent.controller.show_frame(self.device_name))
-        overviewbut.grid(row=7, column=0)
+        overviewbut.grid(row=8, column=0)
