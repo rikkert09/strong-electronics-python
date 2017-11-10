@@ -154,14 +154,14 @@ class ControlUnit(tk.Frame):
         '''
 
         def dataerror():
-            messagebox.showwarning("Foute invoerwaarde",
+            messagebox.showwarning("Foutmelding",
                                    "De minimale uitrolwaarde mag niet hoger zijn dan de maximale uitrolwaarde.")
 
         def dataerror2():
-            messagebox.showwarning("Foute invoerwaarde",
+            messagebox.showwarning("Foutmelding",
                                    "De handmatige uitrolwaarde valt niet binnen het minimum of maximum")
         def dataerror3():
-            messagebox.showwarning("Foute invoerwaarde",
+            messagebox.showwarning("Foutmelding",
                                    "Waarde te hoog!")
         def getdata(event=None):
             minroll = int(minrollspinbox.get()) # retrieves data from all spinboxes and converts them to ints
