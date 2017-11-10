@@ -16,22 +16,23 @@ from the class Mainpage. The class ControlUnit is used as a overview to see data
 Controlunit in which you can adjust settings about that particular Controlunit.
 '''
 style.use('ggplot')
-fig_Light = Figure(figsize=(10,4), dpi = 75)
+fig_Light = Figure(figsize=(10, 4), dpi=75)
 a_Light = fig_Light.add_subplot(111)
+
+
 # a_Light.margins(0)
 
 
 
 
 class ControlUnit(tk.Frame):
-
-
     def __init__(self, parent, controller, control_unit):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.control_unit = control_unit
-        self.x_Values = []
-        self.y_Values = []
+
+        self.x_Values = 60 * [0]
+        self.y_Values = 60 * [control_unit.request_status()[1]]
         self.time = 0
         self.fig_Temp = Figure(figsize=(10, 4), dpi=75)
         self.a_Temp = self.fig_Temp.add_subplot(111)
@@ -46,9 +47,6 @@ class ControlUnit(tk.Frame):
         name = "Besturingseenheid"
         newname = Entry(borderframe)
         newname.insert(0, name)
-
-        def editname():
-            print("Not implemented yet")
 
         # Shows the name of the specific ControlUnit
         namelabel = tk.Label(borderframe, text=name)
@@ -71,102 +69,59 @@ class ControlUnit(tk.Frame):
         customrolllabel.grid(row=7, column=0, sticky=tk.W)
 
         # Scale is the slidebar to set the sensor trigger
-        sensortrigscale = tk.Scale(borderframe, from_=0, to=100, length=200, tickinterval=25,
-                                   orient=tk.HORIZONTAL)
+        self.sensortrigscale = tk.Scale(borderframe, from_=0, to=100, length=200, tickinterval=25,
+                                        orient=tk.HORIZONTAL)
         # sets value
-        sensortrigscale.set(25)
-        sensortrigscale.grid(row=6, column=0)
+        self.sensortrigscale.set(25)
+        self.sensortrigscale.grid(row=6, column=0)
 
         ''''
         ALL SPINBOXES FOR CONTROLUNIT
         '''
 
-        # validates if value is an integer
-        def validate(instr, i, acttyp): # validates if value is an integer
-            ind = int(i)
-            if acttyp == '1':  # insert
-                if not instr[ind].isdigit():
-                    return False
-            return True
-
         # Spinbox to set the minimal unrolling position of the sunshade
-        minrollspinbox = tk.Spinbox(borderframe, from_=0, to= 200, validate='all')
+        self.minrollspinbox = tk.Spinbox(borderframe, from_=0, to=200, validate='all')
         # validates if int
-        minrollspinbox["validatecommand"] = (minrollspinbox.register(validate),'%P','%i','%d')
-        minrollspinbox.delete(0, "end") # clears value
-        minrollspinbox.insert(0, 0)    # sets value
-        minrollspinbox.grid(row=2, column=0, sticky=tk.W)
+        self.minrollspinbox["validatecommand"] = (self.minrollspinbox.register(self.validate), '%P', '%i', '%d')
+        self.minrollspinbox.delete(0, "end")  # clears value
+        self.minrollspinbox.insert(0, 0)  # sets value
+        self.minrollspinbox.grid(row=2, column=0, sticky=tk.W)
 
         # Spinbox to set the maximum unrolling position of the sunshade
-        maxrollspinbox = tk.Spinbox(borderframe, from_=0, to=200, validate='all')
+        self.maxrollspinbox = tk.Spinbox(borderframe, from_=0, to=200, validate='all')
         # validates if int
-        maxrollspinbox["validatecommand"] = (maxrollspinbox.register(validate),'%P','%i','%d')
-        maxrollspinbox.delete(0, "end") # clears value
-        maxrollspinbox.insert(0, 200)    # sets value
-        maxrollspinbox.grid(row=4, column=0, sticky=tk.W)
+        self.maxrollspinbox["validatecommand"] = (self.maxrollspinbox.register(self.validate), '%P', '%i', '%d')
+        self.maxrollspinbox.delete(0, "end")  # clears value
+        self.maxrollspinbox.insert(0, 200)  # sets value
+        self.maxrollspinbox.grid(row=4, column=0, sticky=tk.W)
 
         # Spinbox to set the custom unrolling position of the sunshade
         customrollspinbox = tk.Spinbox(borderframe, from_=0, to=200, validate='all')
         # validates if int
-        customrollspinbox["validatecommand"] = (customrollspinbox.register(validate),'%P','%i','%d')
+        customrollspinbox["validatecommand"] = (customrollspinbox.register(self.validate), '%P', '%i', '%d')
         customrollspinbox.delete(0, "end")  # clears value
-        customrollspinbox.insert(0, 30)     # sets value
+        customrollspinbox.insert(0, 50)  # sets value
         customrollspinbox.grid(row=8, column=0, sticky=tk.W)
-
-        def dataerror():
-            messagebox.showwarning("Foutmelding",
-                                   "De minimale uitrolwaarde mag niet hoger zijn dan de maximale uitrolwaarde.")
-        def dataerror2():
-            messagebox.showwarning("Foutmelding",
-                                   "De handmatige uitrolwaarde valt niet binnen het minimum of maximum")
-        def dataerror3():
-            messagebox.showwarning("Foutmelding",
-                                   "Waarde te hoog!")
-        def getdata(a):
-            # retrieves data from all spinboxes and converts them to ints
-            minroll = int(minrollspinbox.get())
-            maxroll = int(maxrollspinbox.get())
-            customroll = int(customrollspinbox.get())
-            # the .get() function on a scale already retrieves an int
-            sensortrig = sensortrigscale.get()
-            #   create list of all retrieved data
-            datalist = [minroll, maxroll, customroll, sensortrig]
-
-            # checks if maxroll is greater than minroll, otherwise throws an error
-            if minroll > maxroll:
-                print("Throw an error")
-                dataerror()
-            # throws error if customroll is not within minimum and max
-            elif customroll > maxroll or customroll < minroll:
-                dataerror2()
-            # throws error when value is too high
-            elif minroll > 200 or maxroll > 200 or customroll > 200:
-                dataerror3()
-            else:
-                print(datalist)
-
-        def okbut():
-            controller.show_frame("Mainpage")
 
         # OK button applies the data and goes back to the mainpage
         okbut = ttk.Button(borderframe, text="OK", width=10,
-                          command=lambda: controller.show_frame("Mainpage"))
+                           command=lambda: controller.show_frame("Mainpage"))
         okbut.grid(row=9, column=0, sticky=tk.SW)
 
         # The Back button used to go back to the mainpage/frontpage
         cancelbut = ttk.Button(borderframe, text="Cancel", width=10,
-                          command=lambda: controller.show_frame("Mainpage"))
+                               command=lambda: controller.show_frame("Mainpage"))
         cancelbut.grid(row=9, column=0, sticky=tk.S)
 
         # Applies the values that are set in the spinboxes and scale
         # custom unrolling position of the sunshade
         applybut = ttk.Button(borderframe, text="apply", width=10)
-        applybut.bind("<Button-1>", getdata)
+        applybut.bind("<Button-1>", self.getdata)
         applybut.grid(row=9, column=0, sticky=tk.SE)
 
         # Button to edit the control unit name
         editbut = ttk.Button(borderframe, text="edit")
-        editbut.bind("<Button-1>", editname)
+        editbut.bind("<Button-1>", self.editname)
         editbut.grid(row=0, column=0, sticky=tk.E)
 
         marginframe2 = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
@@ -174,7 +129,6 @@ class ControlUnit(tk.Frame):
         # generates a labelframe within frame. padding set to 10
         borderframe2 = tk.Frame(marginframe2, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
         borderframe2.grid(row=0, column=5)
-
 
         marginframe2 = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
         marginframe2.grid(row=1, column=5)
@@ -223,21 +177,73 @@ class ControlUnit(tk.Frame):
 
         self.updateGUI()
 
+    # validates if value is an integer
+    def validate(self, instr, i, acttyp):  # validates if value is an integer
+        ind = int(i)
+        if acttyp == '1':  # insert
+            if not instr[ind].isdigit():
+                return False
+        return True
+
+    def editname(self):
+        print("Not implemented yet")
+
+    def okbut(self):
+        self.controller.show_frame("Mainpage")
+
+    def dataerror(self):
+        messagebox.showwarning("Foutmelding",
+                               "De minimale uitrolwaarde mag niet hoger zijn dan de maximale uitrolwaarde.")
+
+    def dataerror2(self):
+        messagebox.showwarning("Foutmelding",
+                               "De handmatige uitrolwaarde valt niet binnen het minimum of maximum")
+
+    def dataerror3(self):
+        messagebox.showwarning("Foutmelding",
+                               "Waarde te hoog!")
+
+    def getdata(self, a):
+        # retrieves data from all spinboxes and converts them to ints
+        minroll = int(self.minrollspinbox.get())
+        maxroll = int(self.maxrollspinbox.get())
+        customroll = int(self.customrollspinbox.get())
+        # the .get() function on a scale already retrieves an int
+        sensortrig = self.sensortrigscale.get()
+        #   create list of all retrieved data
+        datalist = [minroll, maxroll, customroll, sensortrig]
+
+        # checks if maxroll is greater than minroll, otherwise throws an error
+        if minroll > maxroll:
+            print("Throw an error")
+            self.dataerror()
+        # throws error if customroll is not within minimum and max
+        elif customroll > maxroll or customroll < minroll:
+            self.dataerror2()
+        # throws error when value is too high
+        elif minroll > 200 or maxroll > 200 or customroll > 200:
+            self.dataerror3()
+        else:
+            print(datalist)
+
     def updateGUI(self):
-        self.time = self.time+1
+        self.time = self.time + 1
 
         status = self.control_unit.request_status()
         self.x_Values.append((self.time))
         self.y_Values.append(status[1])
+        self.x_Values = self.x_Values[1:]
+        self.y_Values = self.y_Values[1:]
         self.a_Temp.clear()
         self.a_Temp.plot(self.x_Values, self.y_Values)
+        self.a_Temp.set_ylim((0, 1000))
+        self.a_Temp.legend('hoi')
         canvas_temp = FigureCanvasTkAgg(self.fig_Temp, self)
         canvas_temp.show()
         canvas_temp.get_tk_widget().grid(row=0, column=2, rowspan=10)
 
-        self.luxtext.config(text="Lichtintensiteit in lux : "+str(status[1]))
-        self.rollout_text.config(text="Uitgerold (cm): "+str(status[0]))
+        self.luxtext.config(text="Lichtintensiteit in lux : " + str(status[1]))
+        self.rollout_text.config(text="Uitgerold (cm): " + str(status[0]))
 
         self.update()
         self.after(1000, self.updateGUI)
-
