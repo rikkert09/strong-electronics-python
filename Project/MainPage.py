@@ -16,11 +16,7 @@ class Mainpage(tk.Frame):
         for i in names:
             Mainpage.newc(self, i, names.index(i)) # passes the string and index position in the list of names
 
-        # Mainpage.newc(self, name, 0)
-        # Mainpage.newc(self, name, 1)
-        # Mainpage.newc(self, 2)
-        # Mainpage.newc(self, 3)
-        # Mainpage.newc(self, 4)
+
 
         ''''
         ALL LABELS FOR MAINPAGE

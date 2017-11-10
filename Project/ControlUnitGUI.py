@@ -11,6 +11,7 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import pylab
 
+
 matplotlib.use("TkAgg")
 
 ''''
@@ -54,6 +55,7 @@ def animate_Temp(i):
     a_Temp.clear()
     a_Temp.plot(x_Values, y_Values)
 
+
 class ControlUnit(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -73,21 +75,8 @@ class ControlUnit(tk.Frame):
         newname = Entry(borderframe)
         newname.insert(0, name)
 
-        # def changename(event=None):
-        #     # editname.newedit.grid_forget()
-        #     newlabel = tk.Label(borderframe, text="Temperatuursensor", width=17)
-        #     newlabel.grid(row=0, column=0, sticky=tk.W)
-
         def editname(event=None):
             print("Not implemented yet")
-            # namelabel.grid_forget()
-            # editbut.grid_forget()
-            # newname = Entry(borderframe)
-            # newname.insert(0, name)
-            # newname.grid(row=0, column=0, sticky=tk.W)
-            # newedit = ttk.Button(borderframe, text="OK")
-            # newedit.bind("<Button-1>", changename)
-            # newedit.grid(row=0, column=0, sticky=tk.E)
 
         # Shows the name of the specific ControlUnit
         namelabel = tk.Label(borderframe, text=name)
@@ -116,37 +105,82 @@ class ControlUnit(tk.Frame):
         # Scale is the slidebar to set the sensor trigger
         sensortrigscale = tk.Scale(borderframe, from_=0, to=100, length=200, tickinterval=25,
                                    orient=tk.HORIZONTAL)
-        sensortrigscale.set(0)
+        sensortrigscale.set(25) # sets value
         sensortrigscale.grid(row=6, column=0)
 
         ''''
         ALL SPINBOXES FOR CONTROLUNIT
         '''
 
+        # vcmd = (parent.register(self.ValidateIfNum),'%s', '%S')
+            # (parent.register(self.validate), # passes in the values required to validate
+            #     '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
+
+        # def Entry1_Callback(event):
+        #     minrollspinbox.selection_range(0, END)
+        def testVal(inStr, i, acttyp):
+            ind = int(i)
+            if acttyp == '1':  # insert
+                if not inStr[ind].isdigit():
+                    return False
+            return True
+        # if self == minrollspinbox:
+        #     print('asd')
+
+
         # Spinbox to set the minimal unrolling position of the sunshade
-        minrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        minrollspinbox = tk.Spinbox(borderframe, from_=0, to= 200, validate='all')
+        minrollspinbox["validatecommand"] = (minrollspinbox.register(testVal),'%P','%i','%d') # validates if int
+        minrollspinbox.delete(0, "end") # clears value
+        minrollspinbox.insert(0, 0)    # sets value
         minrollspinbox.grid(row=2, column=0, sticky=tk.W)
 
         # Spinbox to set the maximum unrolling position of the sunshade
-        maxrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        maxrollspinbox = tk.Spinbox(borderframe, from_=0, to=200, validate='all')
+        maxrollspinbox["validatecommand"] = (maxrollspinbox.register(testVal),'%P','%i','%d') # validates if int
+        maxrollspinbox.delete(0, "end") # clears value
+        maxrollspinbox.insert(0, 200)    # sets value
         maxrollspinbox.grid(row=4, column=0, sticky=tk.W)
 
         # Spinbox to set the custom unrolling position of the sunshade
-        customrollspinbox = tk.Spinbox(borderframe, from_=0, to=100)
+        customrollspinbox = tk.Spinbox(borderframe, from_=0, to=200, validate='all')
+        customrollspinbox["validatecommand"] = (customrollspinbox.register(testVal),'%P','%i','%d') # validates if int
+        customrollspinbox.delete(0, "end")  # clears value
+        customrollspinbox.insert(0, 30)     # sets value
         customrollspinbox.grid(row=8, column=0, sticky=tk.W)
 
         ''''
         ALL BUTTONS FOR CONTROLUNIT
         '''
 
+        def dataerror():
+            messagebox.showwarning("Foute invoerwaarde",
+                                   "De minimale uitrolwaarde mag niet hoger zijn dan de maximale uitrolwaarde.")
+
+        def dataerror2():
+            messagebox.showwarning("Foute invoerwaarde",
+                                   "De handmatige uitrolwaarde valt niet binnen het minimum of maximum")
+        def dataerror3():
+            messagebox.showwarning("Foute invoerwaarde",
+                                   "Waarde te hoog!")
         def getdata(event=None):
             minroll = int(minrollspinbox.get()) # retrieves data from all spinboxes and converts them to ints
             maxroll = int(maxrollspinbox.get())
             customroll = int(customrollspinbox.get())
             sensortrig = sensortrigscale.get() # the .get() function on a scale already retrieves an int
             datalist = [minroll, maxroll, customroll, sensortrig] # create list of all retrieved data
+            if minroll > maxroll: #checks if maxroll is greater than minroll, otherwise throws an error
+                print("Throw an error")
+                dataerror()
+            elif customroll > maxroll or customroll < minroll: # throws error if customroll is not within minimum and max
+                dataerror2()
+            elif minroll > 200 or maxroll > 200 or customroll > 200: # throws error when value is too high
+                dataerror3()
+            else:
+                print(datalist)
 
-            print(datalist)
+        def okbut():
+            controller.show_frame("Mainpage")
 
         # OK button applies the data and goes back to the mainpage
         okbut = ttk.Button(borderframe, text="OK", width=10,
@@ -284,3 +318,21 @@ class ControlUnit(tk.Frame):
         canvas_temp.show()
         canvas_temp.get_tk_widget().grid(row=0, column=2, rowspan=10)
 
+
+    # def validate(self, action, index, value_if_allowed, # Validates whether the input is an integer
+    #              prior_value, text, validation_type, trigger_type, widget_name):
+    #     if text in '0123456789':
+    #         try:
+    #             int(value_if_allowed)
+    #             return True
+    #         except ValueError:
+    #             return False
+    #     else:
+    #         return False
+
+    def testVal(inStr, i, acttyp):
+        ind = int(i)
+        if acttyp == '1':  # insert
+            if not inStr[ind].isdigit():
+                return False
+        return True
