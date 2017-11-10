@@ -25,6 +25,7 @@ Sentdex : https://www.youtube.com/watch?v=JQ7QP5rPvjU
 
 '''
 
+
 class ZengApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -79,12 +80,13 @@ class ZengApp(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
+
 if __name__ == "__main__":
     root = ZengApp()
-    ani_Light = animation.FuncAnimation(C.fig_Light, C.animate_Light, interval=1000) # 30000 ms = 30 s
-    ani_Temp = animation.FuncAnimation(C.fig_Temp, C.animate_Temp, interval=1000) # 40000 ms = 40 s
+    # 60000 ms = 60 s, cause the interval time should be 60 seconds
+    ani_Light = animation.FuncAnimation(C.fig_light, C.animate_light, interval=1000)
+    ani_Temp = animation.FuncAnimation(C.fig_temp, C.animate_temp, interval=1000)
     root.geometry("1280x350")           # pixelsize application
     root.title("Zeng Ltd Controller")   # GUI Title
     root.iconbitmap('Z.ico')            # GUI icon
     root.mainloop()
-

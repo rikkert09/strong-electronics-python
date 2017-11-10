@@ -1,16 +1,11 @@
 import tkinter as tk
-from tkinter import font as tkfont
 from tkinter import messagebox
 from tkinter import *
 from tkinter import ttk
 import matplotlib
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from matplotlib import style
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
-import pylab
-
 
 matplotlib.use("TkAgg")
 
@@ -20,40 +15,42 @@ from the class Mainpage. The class ControlUnit is used as a overview to see data
 Controlunit in which you can adjust settings about that particular Controlunit.
 '''
 style.use('ggplot')
-fig_Light = Figure(figsize=(10,4), dpi = 75)
-a_Light = fig_Light.add_subplot(111)
+fig_light = Figure(figsize=(10,4), dpi = 75)
+a_light = fig_light.add_subplot(111)
 # a_Light.margins(0)
 
-fig_Temp = Figure(figsize=(10,4), dpi = 75)
-a_Temp = fig_Temp.add_subplot(111)
+fig_temp = Figure(figsize=(10,4), dpi = 75)
+a_temp = fig_temp.add_subplot(111)
 
-#Function of the graph for the light sensor
-def animate_Light(i):
+
+#   Function of the graph for the light sensor
+def animate_light(i):
     graph_data = open('Light.txt', 'r').read()
     lines = graph_data.split('\n')
-    x_Values = []
-    y_Values = []
+    x_values = []
+    y_values = []
     for line in lines:
         if len(line) > 1:
             x, y = line.split(',')
-            x_Values.append(int(x))
-            y_Values.append(int(y))
-    a_Light.clear()
-    a_Light.plot(x_Values, y_Values)
+            x_values.append(int(x))
+            y_values.append(int(y))
+    a_light.clear()
+    a_light.plot(x_values, y_values)
 
-#Function of the graph for the Temp sensor
-def animate_Temp(i):
+
+#   Function of the graph for the Temp sensor
+def animate_temp(i):
     graph_data = open('Temp.txt', 'r').read()
     lines = graph_data.split('\n')
-    x_Values = []
-    y_Values = []
+    x_values = []
+    y_values = []
     for line in lines:
         if len(line) > 1:
             x, y = line.split(',')
-            x_Values.append(int(x))
-            y_Values.append(int(y))
-    a_Temp.clear()
-    a_Temp.plot(x_Values, y_Values)
+            x_values.append(int(x))
+            y_values.append(int(y))
+    a_temp.clear()
+    a_temp.plot(x_values, y_values)
 
 
 class ControlUnit(tk.Frame):
@@ -61,21 +58,18 @@ class ControlUnit(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
-        ''''
-        ALL LABELS FOR CONTROLUNIT
-        '''
-
-        marginframe = ttk.Frame(self, padding=10)  # generates a frame within the frame with padding set to 10
+        # generates a frame within the frame with padding set to 10
+        marginframe = ttk.Frame(self, padding=10)
         marginframe.grid(row=1)
-        borderframe = tk.Frame(marginframe, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)  # generates a labelframe within frame. padding set to 10
+        # generates a labelframe within frame. padding set to 10
+        borderframe = tk.Frame(marginframe, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
         borderframe.grid(row=1)
 
-        name="Besturingseenheid"
-
+        name = "Besturingseenheid"
         newname = Entry(borderframe)
         newname.insert(0, name)
 
-        def editname(event=None):
+        def editname():
             print("Not implemented yet")
 
         # Shows the name of the specific ControlUnit
@@ -98,83 +92,77 @@ class ControlUnit(tk.Frame):
         customrolllabel = tk.Label(borderframe, text="Handmatig op/uitrollen (in cm)")
         customrolllabel.grid(row=7, column=0, sticky=tk.W)
 
-        ''''
-        ALL SCALES FOR CONTROLUNIT
-        '''
-
         # Scale is the slidebar to set the sensor trigger
         sensortrigscale = tk.Scale(borderframe, from_=0, to=100, length=200, tickinterval=25,
                                    orient=tk.HORIZONTAL)
-        sensortrigscale.set(25) # sets value
+        # sets value
+        sensortrigscale.set(25)
         sensortrigscale.grid(row=6, column=0)
 
         ''''
         ALL SPINBOXES FOR CONTROLUNIT
         '''
 
-        # vcmd = (parent.register(self.ValidateIfNum),'%s', '%S')
-            # (parent.register(self.validate), # passes in the values required to validate
-            #     '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
-
-        # def Entry1_Callback(event):
-        #     minrollspinbox.selection_range(0, END)
-        def testVal(inStr, i, acttyp):
+        # validates if value is an integer
+        def validate(instr, i, acttyp): # validates if value is an integer
             ind = int(i)
             if acttyp == '1':  # insert
-                if not inStr[ind].isdigit():
+                if not instr[ind].isdigit():
                     return False
             return True
-        # if self == minrollspinbox:
-        #     print('asd')
-
 
         # Spinbox to set the minimal unrolling position of the sunshade
         minrollspinbox = tk.Spinbox(borderframe, from_=0, to= 200, validate='all')
-        minrollspinbox["validatecommand"] = (minrollspinbox.register(testVal),'%P','%i','%d') # validates if int
+        # validates if int
+        minrollspinbox["validatecommand"] = (minrollspinbox.register(validate),'%P','%i','%d')
         minrollspinbox.delete(0, "end") # clears value
         minrollspinbox.insert(0, 0)    # sets value
         minrollspinbox.grid(row=2, column=0, sticky=tk.W)
 
         # Spinbox to set the maximum unrolling position of the sunshade
         maxrollspinbox = tk.Spinbox(borderframe, from_=0, to=200, validate='all')
-        maxrollspinbox["validatecommand"] = (maxrollspinbox.register(testVal),'%P','%i','%d') # validates if int
+        # validates if int
+        maxrollspinbox["validatecommand"] = (maxrollspinbox.register(validate),'%P','%i','%d')
         maxrollspinbox.delete(0, "end") # clears value
         maxrollspinbox.insert(0, 200)    # sets value
         maxrollspinbox.grid(row=4, column=0, sticky=tk.W)
 
         # Spinbox to set the custom unrolling position of the sunshade
         customrollspinbox = tk.Spinbox(borderframe, from_=0, to=200, validate='all')
-        customrollspinbox["validatecommand"] = (customrollspinbox.register(testVal),'%P','%i','%d') # validates if int
+        # validates if int
+        customrollspinbox["validatecommand"] = (customrollspinbox.register(validate),'%P','%i','%d')
         customrollspinbox.delete(0, "end")  # clears value
         customrollspinbox.insert(0, 30)     # sets value
         customrollspinbox.grid(row=8, column=0, sticky=tk.W)
 
-        ''''
-        ALL BUTTONS FOR CONTROLUNIT
-        '''
-
         def dataerror():
             messagebox.showwarning("Foutmelding",
                                    "De minimale uitrolwaarde mag niet hoger zijn dan de maximale uitrolwaarde.")
-
         def dataerror2():
             messagebox.showwarning("Foutmelding",
                                    "De handmatige uitrolwaarde valt niet binnen het minimum of maximum")
         def dataerror3():
             messagebox.showwarning("Foutmelding",
                                    "Waarde te hoog!")
-        def getdata(event=None):
-            minroll = int(minrollspinbox.get()) # retrieves data from all spinboxes and converts them to ints
+        def getdata():
+            # retrieves data from all spinboxes and converts them to ints
+            minroll = int(minrollspinbox.get())
             maxroll = int(maxrollspinbox.get())
             customroll = int(customrollspinbox.get())
-            sensortrig = sensortrigscale.get() # the .get() function on a scale already retrieves an int
-            datalist = [minroll, maxroll, customroll, sensortrig] # create list of all retrieved data
-            if minroll > maxroll: #checks if maxroll is greater than minroll, otherwise throws an error
+            # the .get() function on a scale already retrieves an int
+            sensortrig = sensortrigscale.get()
+            #   create list of all retrieved data
+            datalist = [minroll, maxroll, customroll, sensortrig]
+
+            # checks if maxroll is greater than minroll, otherwise throws an error
+            if minroll > maxroll:
                 print("Throw an error")
                 dataerror()
-            elif customroll > maxroll or customroll < minroll: # throws error if customroll is not within minimum and max
+            # throws error if customroll is not within minimum and max
+            elif customroll > maxroll or customroll < minroll:
                 dataerror2()
-            elif minroll > 200 or maxroll > 200 or customroll > 200: # throws error when value is too high
+            # throws error when value is too high
+            elif minroll > 200 or maxroll > 200 or customroll > 200:
                 dataerror3()
             else:
                 print(datalist)
@@ -209,7 +197,7 @@ class ControlUnit(tk.Frame):
         2 = currently Light
         '''
 
-        test1= 2
+        test1 = 2
 
         if test1 == 1:
 
@@ -308,31 +296,13 @@ class ControlUnit(tk.Frame):
         '''
         Drawing of the graph and its position (NOT the animation!)
         '''
-        #drawing of the light sensor graph into the frame
-        canvas_light = FigureCanvasTkAgg(fig_Light, self)
+
+        #   drawing of the light sensor graph into the frame
+        canvas_light = FigureCanvasTkAgg(fig_light, self)
         canvas_light.show()
         canvas_light.get_tk_widget().grid(row=0, column=2, rowspan=10)
 
-        #drawing of the Temp sensor graph into the frame
-        canvas_temp = FigureCanvasTkAgg(fig_Temp, self)
+        #   drawing of the Temp sensor graph into the frame
+        canvas_temp = FigureCanvasTkAgg(fig_temp, self)
         canvas_temp.show()
         canvas_temp.get_tk_widget().grid(row=0, column=2, rowspan=10)
-
-
-    # def validate(self, action, index, value_if_allowed, # Validates whether the input is an integer
-    #              prior_value, text, validation_type, trigger_type, widget_name):
-    #     if text in '0123456789':
-    #         try:
-    #             int(value_if_allowed)
-    #             return True
-    #         except ValueError:
-    #             return False
-    #     else:
-    #         return False
-
-    def testVal(inStr, i, acttyp):
-        ind = int(i)
-        if acttyp == '1':  # insert
-            if not inStr[ind].isdigit():
-                return False
-        return True
