@@ -18,16 +18,8 @@ class Mainpage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.controller = controller
-        names = ["Besturingseenheid 1", "Besturingseenheid 2", "asdasd 3"]
-      #  for i in names:
-     #       Mainpage.newc(self, i, names.index(i)) # passes the string and index position in the list of names
-
-
 
         ports = get_COM_ports()
-
-
-
 
         for port in ports:
             self.control_units.append(ControlUnit(port.device))
@@ -35,79 +27,82 @@ class Mainpage(tk.Frame):
         for index, control_unit in enumerate(self.control_units):
             control_unit.request_connection()
             if(control_unit.connected):
-                frame = ControlUnitFrame(self, control_unit, index)
-                controlunitframe = ControlUnitGUI.ControlUnit(parent=parent, controller=controller, control_unit=control_unit)
-                controlunitframe.grid(row=0, column=0, sticky="nsew")
-                controller.frames[control_unit.request_device_name()] = controlunitframe
-
-        ''''
-        ALL LABELS FOR MAINPAGE
-        '''
-        # def scan(self):
-        #     ports = ge
-        #     for p in ports:
-        #         print(p)
-        #
-        # scanbutton = ttk.Button(self, text="Scan for devices")
-        # scanbutton.bind("<Button-1>", scan)
-        # scanbutton.grid(row=0)
+                control_unit_detail = ControlUnitGUI.ControlUnit(parent=parent, controller=controller, control_unit=control_unit)
+                control_unit_detail.grid(row=0, column=0, sticky="nsew")
+                controller.frames[control_unit.request_device_name()] = control_unit_detail
+                frame = ControlUnitFrame(self, control_unit_detail, index)
 
 
-class ControlUnitFrame:
-    def __init__(self, parent, control_unit, col):
+class ControlUnitFrame(tk.Frame):
+    def __init__(self, parent, control_unit_detail, col):
+        tk.Frame.__init__(self, parent)
         self.parent = parent
-        self.control_unit = control_unit
-        self.device_name = control_unit.request_device_name()
+        self.control_unit_detail = control_unit_detail
+        self.device_name = control_unit_detail.control_unit.request_device_name()
         self.name_label = tk.Label()
-        self.newc(col)
 
-    def newc(self, col): # name is a string and col is the index position at which to place the control unit
-        marginframe = tk.Frame(self.parent, padx=10, pady=10, width=300)  # generates a frame within the frame with padding set to 10
-        marginframe.grid(row=1, column=col)
-        borderframe = tk.Frame(marginframe, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
+        margin_frame = tk.Frame(self.parent, padx=10, pady=10, width=300)  # generates a frame within the frame with padding set to 10
+        margin_frame.grid(row=1, column=col)
+        border_frame = tk.Frame(margin_frame, highlightbackground="grey", highlightthickness=1, padx=10, pady=10)
         # generates a tk.frame within another frame, to get the padding/margin right. padx/pady set to 10
-        borderframe.grid(row=1)
+        border_frame.grid(row=1)
 
         # print(borderframe.grid_info())
 
         # a line of text
-        namelabel = tk.Label(borderframe, text=self.device_name, width=20, height=7)
-        namelabel.grid(row=0, column=0)
+        name_label = tk.Label(border_frame, text=self.device_name, width=15, font=(None, 15, 'bold'))
+        name_label.grid(row=0, column=0)
+
+        type_label = tk.Label(border_frame, text=self.control_unit_detail.type, height=0, font=(None, 10, 'italic'))
+        type_label.grid(row=1, column=0)
+
+        empty_label = tk.Label(border_frame)
+        empty_label.grid(row=2, column=0)
 
         # shows rollout status
-        rolloutlabel = tk.Label(borderframe, text="Uiterold: ")
-        rolloutlabel.grid(row=1, column=0, sticky=tk.N)
+        roll_out_label = tk.Label(border_frame, text="Uiterold: ", font=(None, 10, 'bold'))
+        roll_out_label.grid(row=3, column=0, sticky=tk.N)
 
         # a row of white space
-        rollout_value = tk.Label(borderframe, text=" 10 cm ")
-        rollout_value.grid(row=2, column=0, sticky=tk.N)
+        self.roll_out_value = tk.Label(border_frame, text="10 cm")
+        self.roll_out_value.grid(row=4, column=0, sticky=tk.N)
 
         # shows sensor value
-        sensorvaluelabel = tk.Label(borderframe, text="Sensorwaarde: ")
-        sensorvaluelabel.grid(row=3, column=0, sticky=tk.N)
+        sensor_value_label = tk.Label(border_frame, text="Sensorwaarde: ", font=(None, 10, 'bold'))
+        sensor_value_label.grid(row=5, column=0, sticky=tk.N)
 
         # a row of white space
-        sensorvalue = tk.Label(borderframe, text=" 10 ")
-        sensorvalue.grid(row=4, column=0, sticky=tk.N)
+        self.sensor_value = tk.Label(border_frame, text="1 ")
+        self.sensor_value.grid(row=6, column=0, sticky=tk.N)
 
 
         # a row of white space
-        emptylabel = tk.Label(borderframe)
-        emptylabel.grid(row=5, column=0)
+        empty_label = tk.Label(border_frame)
+        empty_label.grid(row=7, column=0)
 
         ''''
         ALL BUTTONS FOR MAINPAGE
         '''
         # Button to roll up the sunshade
-        rollupbut = ttk.Button(borderframe, text="Oprollen", width=20)
-        rollupbut.grid(row=6, column=0)
+        roll_up_button = ttk.Button(border_frame, text="Oprollen", width=20)
+        roll_up_button.grid(row=8, column=0)
 
         # Button to roll out the sunshade
-        rolloutbut = ttk.Button(borderframe, text="Uitrollen", width=20)
-        rolloutbut.grid(row=7, column=0)
+        roll_out_button = ttk.Button(border_frame, text="Uitrollen", width=20)
+        roll_out_button.grid(row=9, column=0)
 
         # Button to go to detailed information about a particulair Controlunit
 
-        overviewbut = ttk.Button(borderframe, text="Overzicht", width=20,
+        overview_button = ttk.Button(border_frame, text="Overzicht", width=20,
                           command=lambda: self.parent.controller.show_frame(self.device_name))
-        overviewbut.grid(row=8, column=0)
+        overview_button.grid(row=10, column=0)
+
+        self.update_GUI()
+
+    def update_GUI(self):
+        status = self.control_unit_detail.status
+
+        self.roll_out_value.config(text=str(status[0])+" cm")
+        self.sensor_value.config(text=str(status[1]))
+
+        self.after(1000, self.update_GUI)

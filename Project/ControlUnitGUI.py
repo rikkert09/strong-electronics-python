@@ -8,6 +8,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 from matplotlib import style
 
+from Project import ControlUnitProt as CUP
+
 matplotlib.use("TkAgg")
 style.use('ggplot')
 
@@ -23,7 +25,8 @@ class ControlUnit(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.control_unit = control_unit
-
+        self.status = control_unit.request_status()
+        self.type = control_unit.request_sensor_type()
         self.x_Values = 60 * [0]
         self.y_Values = 60 * [control_unit.request_status()[1]]
         self.time = 0
@@ -46,26 +49,26 @@ class ControlUnit(tk.Frame):
         name_label.grid(row=0, column=0, sticky=tk.W)
 
         # Text for the option to set the minimum roll out value of the sunshade
-        minroll_label = tk.Label(border_frame, text="Minimale Uitrol (in cm)")
+        minroll_label = tk.Label(border_frame, text="Minimale Uitrol (in cm)", font=(None, 9, 'bold'))
         minroll_label.grid(row=1, column=0, sticky=tk.W)
 
         # Text for the option to set the maximum roll out value of the sunshade
-        maxroll_label = tk.Label(border_frame, text="Maximale Uitrol (in cm)")
+        maxroll_label = tk.Label(border_frame, text="Maximale Uitrol (in cm)", font=(None, 9, 'bold'))
         maxroll_label.grid(row=3, column=0, sticky=tk.W)
 
         # Text for the option to set the trigger value of the sensor
-        sensor_trig_label = tk.Label(border_frame, text="Sensor Trigger")
+        sensor_trig_label = tk.Label(border_frame, text="Sensor Trigger", font=(None, 9, 'bold'))
         sensor_trig_label.grid(row=5, column=0, sticky=tk.W)
 
         # Text for the option to set the custom value of the sunshade
-        custom_roll_label = tk.Label(border_frame, text="Handmatig op/uitrollen (in cm)")
+        custom_roll_label = tk.Label(border_frame, text="Handmatig op/uitrollen (in cm)", font=(None, 9, 'bold'))
         custom_roll_label.grid(row=7, column=0, sticky=tk.W)
 
         # Scale is the slidebar to set the sensor trigger
         self.sensor_trig_scale = tk.Scale(border_frame, from_=0, to=100, length=200, tickinterval=25,
                                           orient=tk.HORIZONTAL)
         # sets value
-        self.sensor_trig_scale.set(25)
+        self.sensor_trig_scale.set(control_unit.request_setting(CUP.SETTING_SENSOR_TRIG_VAL))
         self.sensor_trig_scale.grid(row=6, column=0)
 
         ''''
@@ -77,7 +80,7 @@ class ControlUnit(tk.Frame):
         # validates if int
         self.min_roll_spinbox["validatecommand"] = (self.min_roll_spinbox.register(self.validate), '%P', '%i', '%d')
         self.min_roll_spinbox.delete(0, "end")  # clears value
-        self.min_roll_spinbox.insert(0, 0)  # sets value
+        self.min_roll_spinbox.insert(0, control_unit.request_setting(CUP.SETTING_MIN_EXTEND))  # sets value
         self.min_roll_spinbox.grid(row=2, column=0, sticky=tk.W)
 
         # Spinbox to set the maximum unrolling position of the sunshade
@@ -85,7 +88,7 @@ class ControlUnit(tk.Frame):
         # validates if int
         self.max_roll_spinbox["validatecommand"] = (self.max_roll_spinbox.register(self.validate), '%P', '%i', '%d')
         self.max_roll_spinbox.delete(0, "end")  # clears value
-        self.max_roll_spinbox.insert(0, 200)  # sets value
+        self.max_roll_spinbox.insert(0, control_unit.request_setting(CUP.SETTING_MAX_EXTEND))  # sets value
         self.max_roll_spinbox.grid(row=4, column=0, sticky=tk.W)
 
         # Spinbox to set the custom unrolling position of the sunshade
@@ -130,35 +133,35 @@ class ControlUnit(tk.Frame):
         border_frame2.grid(row=0, column=5)
 
         # Shows label of text
-        graph_info = tk.Label(border_frame2, text="Informatie Besturingseenheid")
+        graph_info = tk.Label(border_frame2, text="Informatie Besturingseenheid", font=(None, 9, 'bold'))
         graph_info.grid(row=0, column=0, sticky=tk.W)
 
         empty_block = tk.Label(border_frame2)
         empty_block.grid(row=1, column=0, sticky=tk.W)
 
-        type_graph_text = tk.Label(border_frame2, text="Type Grafiek:")
+        type_graph_text = tk.Label(border_frame2, text="Type Grafiek:", font=(None, 9, 'bold'))
         type_graph_text.grid(row=2, column=0, sticky=tk.W)
 
-        graph2_text = tk.Label(border_frame2, text="Licht")
+        graph2_text = tk.Label(border_frame2, text=self.type)
         graph2_text.grid(row=3, column=0, sticky=tk.W)
 
         empty_block2 = tk.Label(border_frame2)
         empty_block2.grid(row=4, column=0, sticky=tk.W)
 
-        x_as_label = tk.Label(border_frame2, text="X-as : Tijd in seconden")
+        x_as_label = tk.Label(border_frame2, text="X-as : Tijd in seconden", font=(None, 9, 'bold'))
         x_as_label.grid(row=5, column=0, sticky=tk.W)
 
-        y_as_label = tk.Label(border_frame2, text="Y-as : Lichtintensiteit in lx")
+        y_as_label = tk.Label(border_frame2, text="Y-as : Lichtintensiteit in lx", font=(None, 9, 'bold'))
         y_as_label.grid(row=6, column=0, sticky=tk.W)
 
         empty_block3 = tk.Label(border_frame2)
         empty_block3.grid(row=7, column=0, sticky=tk.W)
 
         # Shows the label with the temperature
-        self.lux_label = tk.Label(border_frame2, text="Lichtintensiteit in lux : ")
+        self.lux_label = tk.Label(border_frame2, text="Lichtintensiteit in lux : ", font=(None, 9, 'bold'))
         self.lux_label.grid(row=8, column=0, sticky=tk.W)
 
-        self.roll_out_text = tk.Label(border_frame2, text="Uitgerold (cm): ")
+        self.roll_out_text = tk.Label(border_frame2, text="Uitgerold (cm): ", font=(None, 9, 'bold'))
         self.roll_out_text.grid(row=9, column=0, sticky=tk.W)
 
         empty_block4 = tk.Label(border_frame2)
@@ -202,9 +205,10 @@ class ControlUnit(tk.Frame):
         max_roll = int(self.max_roll_spinbox.get())
         custom_roll = int(self.custom_roll_spinbox.get())
         # the .get() function on a scale already retrieves an int
-        sensortrig = self.sensor_trig_scale.get()
+        sensor_trig = self.sensor_trig_scale.get()
         #   create list of all retrieved data
-        datalist = [min_roll, max_roll, custom_roll, sensortrig]
+        data_dict = {CUP.SETTING_MIN_EXTEND: min_roll, CUP.SETTING_MAX_EXTEND: max_roll,
+                     CUP.SETTING_EXTEND_TO_VAL: custom_roll, CUP.SETTING_SENSOR_TRIG_VAL: sensor_trig}
 
         # checks if maxroll is greater than minroll, otherwise throws an error
         if min_roll > max_roll:
@@ -217,26 +221,34 @@ class ControlUnit(tk.Frame):
         elif min_roll > 200 or max_roll > 200 or custom_roll > 200:
             self.data_error3()
         else:
-            print(datalist)
+            self.apply(data_dict)
+
+    def apply(self, data_dict):
+        for key, value in data_dict.items():
+            self.control_unit.update_setting(key, value)
+            print(self.control_unit.request_setting(key))
 
     def update_GUI(self):
         self.time = self.time + 1
 
-        status = self.control_unit.request_status()
+        self.status = self.control_unit.request_status()
         self.x_Values.append((self.time))
-        self.y_Values.append(status[1])
+        self.y_Values.append(self.status[1])
         self.x_Values = self.x_Values[1:]
         self.y_Values = self.y_Values[1:]
         self.a_Temp.clear()
         self.a_Temp.plot(self.x_Values, self.y_Values)
-        self.a_Temp.set_ylim((0, 1000))
+        self.a_Temp.set_ylim((0, 1000 if max(self.y_Values) < 1000 else max(self.y_Values) + 100))
 
         canvas_temp = FigureCanvasTkAgg(self.fig_Temp, self)
         canvas_temp.show()
         canvas_temp.get_tk_widget().grid(row=0, column=2, rowspan=10)
 
-        self.lux_label.config(text="Lichtintensiteit in lux : " + str(status[1]))
-        self.roll_out_text.config(text="Uitgerold (cm): " + str(status[0]))
+        self.lux_label.config(text="Lichtintensiteit in lux : " + str(self.status[1]))
+        self.roll_out_text.config(text="Uitgerold (cm): " + str(self.status[0]))
 
-        self.update()
+        #self.update()
         self.after(1000, self.update_GUI)
+
+
+
