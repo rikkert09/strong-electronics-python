@@ -35,10 +35,10 @@ class ZengApp(tk.Tk):
         # on top of each other, then the one we want visible
         # will be raised above the others
         # uses ttk.Frame with padding set to 10
-        container = ttk.Frame(self, padding=10)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+        self.container = ttk.Frame(self, padding=10)
+        self.container.pack(side="top", fill="both", expand=True)
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
         # for #F in (M.Mainpage, C.ControlUnit):
@@ -51,18 +51,15 @@ class ZengApp(tk.Tk):
         # will be the one that is visible.
         # frame.grid(row=0, column=0, sticky="nsew")
 
-        frame = M.Mainpage(parent=container, controller=self)
-        frame.grid(row=0, column=0, sticky="nsew")
-        self.frames[M.Mainpage.__name__] = frame
+        self.frame = M.Mainpage(parent=self.container, controller=self)
+        self.frame.grid(row=0, column=0, sticky="nsew")
+        self.frames[M.Mainpage.__name__] = self.frame
         self.show_frame("Mainpage")
 
         menubar = tk.Menu(self)
         file_menu = tk.Menu(menubar, tearoff=0)
-        file_menu.add_command(label="Open")
-        file_menu.add_command(label="Save")
         file_menu.add_separator()
         file_menu.add_command(label="Quit", command=self.quit)
-        menubar.add_cascade(label="File", menu=file_menu)
 
         def show_about():
             messagebox.showwarning(
@@ -77,6 +74,13 @@ class ZengApp(tk.Tk):
         menubar.add_cascade(label="Help", menu=help_menu)
         self.config(menu=menubar)
 
+    def refresh(self):
+        self.frame.destroy()
+        frame = M.Mainpage(parent=self.container, controller=self)
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.frames[M.Mainpage.__name__] = frame
+        self.show_frame("Mainpage")
+
     def show_frame(self, page_name):
         # Shows a frame for the given page name
         frame = self.frames[page_name]
@@ -89,4 +93,7 @@ if __name__ == "__main__":
     root.title("Zeng Ltd Controller")   # GUI Title
     root.iconbitmap('Z.ico')            # GUI icon
     root.mainloop()
+
+
+
 
